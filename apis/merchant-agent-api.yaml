@@ -1,0 +1,751 @@
+openapi: 3.0.1
+info:
+  title: 商户代理API
+  version: 1.0.0
+servers:
+- url: https://merchant-agent.zsf918.com/
+tags:
+- name: 人员
+  description: 人员类API
+- name: 财务
+  description: 财务类API
+- name: 团队
+  description: 团队类API
+paths:
+  /agent/merchant/subordinate:
+    post:
+      tags:
+      - 人员
+      summary: 创建新下级商户
+      operationId: createMerchant
+      parameters:
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Merchant'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/subordinates:
+    get:
+      tags:
+      - 人员
+      summary: 获取下级列表
+      operationId: listSubordinates
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Merchant'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/subordinate/{merchantId}:
+    get:
+      tags:
+      - 人员
+      summary: 获取单个下级信息
+      operationId: getSubordinateById
+      parameters:
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Merchant'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+    post:
+      tags:
+      - 人员
+      summary: 更新单个下级信息
+      operationId: updateMerchantById
+      parameters:
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Merchant'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+    delete:
+      tags:
+      - 人员
+      summary: 删除单个下级
+      operationId: deleteMerchantById
+      parameters:
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/transaction/{merchantId}:
+    get:
+      tags:
+      - 财务
+      summary: 获取单个下级交易列表
+      operationId: getSubordinateTransactionsById
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: fromTime
+        in: query
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/orders:
+    get:
+      tags:
+      - 财务
+      summary: 获取下级订单统计列表
+      operationId: getSubordinateOrdersStatistics
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: time
+        in: query
+        description: 日期
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrdersStatistics'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/financials:
+    get:
+      tags:
+      - 财务
+      summary: 获取下级财务统计列表
+      operationId: getSubordinateFinancials
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: time
+        in: query
+        description: 日期
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FinancialStatistics'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+  /agent/merchant/financial/{merchantId}:
+    get:
+      tags:
+      - 财务
+      summary: 获取单个下级财务统计列表
+      operationId: getSubordinateFinancialsById
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: fromTime
+        in: query
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FinancialStatisticsDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/teams:
+    get:
+      tags: 
+      - 团队
+      summary: 获取团队列表信息
+      operationId: getMerchantTeams
+      parameters: 
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Team'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/team/{merchantId}:
+    get:
+      tags: 
+      - 团队
+      summary: 获取单个下级团队信息
+      operationId: getMerchantTeamById
+      parameters:
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Team'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+components:
+  schemas:
+    Merchant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 商户ID
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        agent:
+          type: boolean
+          description: 是否为代理
+        dailyLimitAmount:
+          type: number
+          format: double
+          description: 日限额
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueType'
+            alipay:
+              $ref: '#/components/schemas/ValueType'
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+    
+    ValueType:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [percent, absolute]
+          description: >
+            数值类型:
+             * `percent` - 百分比
+             * `absolute` - 绝对值
+        value:
+          type: number
+          description: 数值
+          
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 交易ID
+        merchantId:
+          type: string
+          description: 商户ID
+        amount:
+          type: number
+          description: 交易金额
+        type:
+          type: string
+          enum: [ordered, rebate]
+          description: >
+            交易类型:
+             * `ordered` - 商户下单
+             * `orderedRebate` - 下单返佣
+        orderId:
+          type: string
+          description: 关联订单号
+        orderState:
+          type: string
+          description: 关联订单状态
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期
+    
+    OrdersStatistics:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          description: 商户ID
+        time:
+          type: string
+          format: date-time
+          description: 统计日期
+        totalOrders:
+          type: integer
+          format: int64
+          description: 总订单数量
+        channels:
+          type: array
+          description: 通道统计
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                description: 通道类型
+              successOrders:
+                type: integer
+                format: int64
+                description: 成功订单数
+              totalOrdersAmount:
+                type: number
+                description: 总订单金额
+              totalSuccessOrdersAmount:
+                type: number
+                description: 总成功订单金额
+    
+    FinancialStatistics:
+      type: object
+      properties:
+        merchantId:
+          type: string
+          description: 商户ID
+        time:
+          type: string
+          format: date-time
+          description: 统计日期
+        totalOrders:
+          type: integer
+          format: int64
+          description: 总订单数量
+        channels:
+          type: array
+          description: 通道统计
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                description: 通道类型
+              totalOrderedAmount:
+                type: number
+                description: 总下单金额
+              totalRebateAmount:
+                type: number
+                description: 总返佣金额
+    
+    FinancialStatisticsDetail:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: 统计日期
+        totalOrders:
+          type: integer
+          format: int64
+          description: 总订单数量
+        channels:
+          type: array
+          description: 通道统计
+          items:
+            type: object
+            properties:
+              channel:
+                type: string
+                description: 通道类型
+              totalOrderedAmount:
+                type: number
+                description: 总下单金额
+              totalWithdrawAmount:
+                type: number
+                description: 总提现金额
+
+    Team:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 商户ID
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        agent:
+          type: boolean
+          description: 是否为代理
+        subordinateAgentCount:
+          type: integer
+          format: int64
+          description: 直属下级商户代理数量
+        subordinateNormalCount:
+          type: integer
+          format: int64
+          description: 直属下级商户数量
+        totalAmount:
+          type: integer
+          format: int64
+          description: 直属下级总可用额度
+        totalLockAmount:
+          type: integer
+          format: int64
+          description: 直属下级总冻结额度
+        
+    
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: text
+
+security:
+  - bearerAuth: []
