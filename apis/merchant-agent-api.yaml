@@ -136,7 +136,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/Merchant'
+                $ref: '#/components/schemas/MerchantUpdateReq'
       responses:
         200:
           description: 成功
@@ -761,6 +761,9 @@ components:
         username:
           type: string
           description: 用户名
+        password:
+          type: string
+          description: 密码
         nickname:
           type: string
           description: 昵称（联系用名）
@@ -771,6 +774,23 @@ components:
         agent:
           type: boolean
           description: 是否为代理
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              type: number
+              description: 数值
+            alipay:
+              type: number
+              description: 数值
+
+    MerchantUpdateReq:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 昵称（联系用名）
         commission:
           type: object
           description: 佣金比例
