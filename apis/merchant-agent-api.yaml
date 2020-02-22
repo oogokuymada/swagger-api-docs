@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.4
+  version: 1.0.5
 servers:
 - url: https://merchant-agent.zsf918.com/
 tags:
@@ -711,12 +711,12 @@ components:
     BankCreateReq:
       type: object
       properties:
+        bankId: 
+          type: string
+          description: 银行Id
         bankAccount:
           type: string
           description: 银行开户名
-        bankName: 
-          type: string
-          description: 银行名称
         bankCard: 
           type: string
           description: 银行卡号
