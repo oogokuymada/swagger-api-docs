@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: https://merchant-agent.zsf918.com/
 tags:
@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/Merchant'
+                $ref: '#/components/schemas/MerchantCreateReq'
       responses:
         200:
           description: 成功
@@ -172,6 +172,33 @@ paths:
         required: true
         schema:
           type: string
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/withdraw:
+    post:
+      tags:
+      - 财务
+      summary: 创建提现申请
+      operationId: createWithdraw
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/WithdrawCreateReq'
       responses:
         200:
           description: 成功
@@ -520,6 +547,46 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
 components:
   schemas:
+    WithdrawCreateReq:
+      type: object
+      properties:
+        bankId:
+          type: string
+          description: 银行卡ID
+        amount:
+          type: number
+          description: 金额
+        secretPassword:
+          type: string
+          description: 安全密码
+
+    MerchantCreateReq:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        agent:
+          type: boolean
+          description: 是否为代理
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              type: number
+              description: 数值
+            alipay:
+              type: number
+              description: 数值
+          
     Merchant:
       type: object
       properties:
@@ -539,10 +606,6 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        dailyLimitAmount:
-          type: number
-          format: double
-          description: 日限额
         commission:
           type: object
           description: 佣金比例
