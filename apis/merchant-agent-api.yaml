@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.1
+  version: 1.0.2
 servers:
 - url: https://merchant-agent.zsf918.com/
 tags:
@@ -18,13 +18,6 @@ paths:
       - 人员
       summary: 创建新下级商户
       operationId: createMerchant
-      parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
