@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 基础API
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: https://base-api.zsf918.com/v1
 tags:
@@ -41,7 +41,7 @@ paths:
                     type: integer
                     format: int64
                     description: 总数
-                  items:
+                  records:
                     type: array
                     items:
                       $ref: '#/components/schemas/Bank'
