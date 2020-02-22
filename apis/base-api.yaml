@@ -1,0 +1,95 @@
+openapi: 3.0.1
+info:
+  title: 基础API
+  version: 1.0.0
+servers:
+- url: https://base-api.zsf918.com/v1
+tags:
+- name: 信息
+  description: 信息类API
+paths:
+  /base/banks:
+    get:
+      tags:
+      - 信息
+      summary: 获取银行列表
+      operationId: listBanks
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bank'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+components:
+  schemas:
+    Bank:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 银行id
+        bankName: 
+          type: string
+          description: 银行名称
+        bankState: 
+          type: string
+          description: 银行状态
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: text
+
+security:
+  - bearerAuth: []
