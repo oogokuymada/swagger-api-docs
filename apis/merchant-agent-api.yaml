@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.1
+  version: 1.0.3
 servers:
 - url: https://merchant-agent.zsf918.com/
 tags:
@@ -18,13 +18,6 @@ paths:
       - 人员
       summary: 创建新下级商户
       operationId: createMerchant
-      parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
       requestBody:
         content:
           application/json:
@@ -143,7 +136,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/Merchant'
+                $ref: '#/components/schemas/MerchantUpdateReq'
       responses:
         200:
           description: 成功
@@ -176,6 +169,131 @@ paths:
         200:
           description: 成功
           content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/banks:
+    get:
+      tags:
+      - 财务
+      summary: 获取银行卡列表
+      operationId: listBanks
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bank'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/bank:
+    post:
+      tags:
+      - 财务
+      summary: 创建银行卡
+      operationId: createBank
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/BankCreateReq'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/withdraws:
+    get:
+      tags:
+      - 财务
+      summary: 获取提现申请列表
+      operationId: listWithdraws
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Withdraw'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -547,6 +665,80 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
 components:
   schemas:
+    Bank:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 银行卡id
+        bankAccount:
+          type: string
+          description: 银行开户名
+        bankName: 
+          type: string
+          description: 银行名称
+        bankCard: 
+          type: string
+          description: 银行卡号
+        bankAddress: 
+          type: string
+          description: 银行地址
+
+    BankCreateReq:
+      type: object
+      properties:
+        bankAccount:
+          type: string
+          description: 银行开户名
+        bankName: 
+          type: string
+          description: 银行名称
+        bankCard: 
+          type: string
+          description: 银行卡号
+        bankAddress: 
+          type: string
+          description: 银行地址
+
+    Withdraw:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 提现ID
+        bankId:
+          type: string
+          description: 银行卡ID
+        amount:
+          type: number
+          description: 金额
+        fee:
+          type: number
+          description: 手续费
+        actualAmount:
+          type: number
+          description: 实际到账金额
+        state:
+          type: string
+          description: 提现状态
+        payCredit:
+          type: string
+          description: 支付凭证
+        payAt:
+          type: string
+          format: date-time
+          description: 支付日期
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+        note:
+          type: string
+          description: 提现备注
+        reviewNote:
+          type: string
+          description: 审核备注
+
     WithdrawCreateReq:
       type: object
       properties:
@@ -559,6 +751,9 @@ components:
         secretPassword:
           type: string
           description: 安全密码
+        note:
+          type: string
+          description: 提现备注
 
     MerchantCreateReq:
       type: object
@@ -566,6 +761,9 @@ components:
         username:
           type: string
           description: 用户名
+        password:
+          type: string
+          description: 密码
         nickname:
           type: string
           description: 昵称（联系用名）
@@ -576,6 +774,23 @@ components:
         agent:
           type: boolean
           description: 是否为代理
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              type: number
+              description: 数值
+            alipay:
+              type: number
+              description: 数值
+
+    MerchantUpdateReq:
+      type: object
+      properties:
+        nickname:
+          type: string
+          description: 昵称（联系用名）
         commission:
           type: object
           description: 佣金比例
