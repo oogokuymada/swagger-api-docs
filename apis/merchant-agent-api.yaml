@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.5
+  version: 1.0.6
 servers:
-- url: https://merchant-agent.zsf918.com/
+- url: https://merchant-agent-api.zsf918.com/v1
 tags:
 - name: 人员
   description: 人员类API
@@ -161,34 +161,6 @@ paths:
           application/json:
             schema:
                 $ref: '#/components/schemas/MerchantUpdateReq'
-      responses:
-        200:
-          description: 成功
-          content: {}
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-        403:
-          description: 已授权无权限
-          content: {}
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
-    delete:
-      tags:
-      - 人员
-      summary: 删除单个下级
-      operationId: deleteMerchantById
-      parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
       responses:
         200:
           description: 成功
