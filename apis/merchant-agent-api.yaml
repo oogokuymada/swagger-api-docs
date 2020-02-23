@@ -1004,20 +1004,32 @@ components:
           type: integer
           format: int64
           description: 总订单数量
-        channels:
+        ordered:
           type: object
-          description: 通道统计
+          description: 下单分通道统计
           additionalProperties:
             type: object
             properties:
-              totalOrderedAmount:
+              totalAmount:
                 type: number
-                description: 总下单金额
+                description: 总金额
           example:
             alipay:
-              totalOrderedAmount: 1000
+              totalAmount: 1000
             wechat:
-              totalOrderedAmount: 10000
+              totalAmount: 10000
+        withdraw:
+          type: object
+          description: 提现分通道统计
+          additionalProperties:
+            type: object
+            properties:
+              totalAmount:
+                type: number
+                description: 总金额
+          example:
+            bank:
+              totalAmount: 1000
 
     Team:
       type: object
