@@ -258,9 +258,9 @@ paths:
       tags:
       - 财务
       summary: 编辑银行卡
-      operationId: createBank
+      operationId: updateBank
       parameters:
-      - name: merchantId
+      - name: bankId
         in: path
         description: 银行卡ID
         required: true
