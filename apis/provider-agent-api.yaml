@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
-  title: 商户代理API
-  version: 1.0.8
+  title: 服务商代理API
+  version: 1.0.0
 servers:
-- url: https://merchant-agent-api.zsf918.com/v1
+- url: https://provider-agent-api.zsf918.com/v1
 tags:
 - name: 人员
   description: 人员类API
@@ -12,17 +12,17 @@ tags:
 - name: 团队
   description: 团队类API
 paths:
-  /agent/merchant/subordinate:
+  /agent/provider/subordinate:
     post:
       tags:
       - 人员
-      summary: 创建新下级商户
-      operationId: createMerchant
+      summary: 创建新下级服务商
+      operationId: createProvider
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/MerchantCreateReq'
+                $ref: '#/components/schemas/ProviderCreateReq'
       responses:
         200:
           description: 成功
@@ -50,7 +50,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Merchant'
+                $ref: '#/components/schemas/Provider'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -63,7 +63,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/subordinates:
+  /agent/provider/subordinates:
     get:
       tags:
       - 人员
@@ -99,7 +99,7 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Merchant'
+                      $ref: '#/components/schemas/Provider'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -112,16 +112,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/subordinate/{merchantId}:
+  /agent/provider/subordinate/{providerId}:
     get:
       tags:
       - 人员
       summary: 获取单个下级信息
       operationId: getSubordinateById
       parameters:
-      - name: merchantId
+      - name: providerId
         in: path
-        description: 商户ID
+        description: 服务商ID
         required: true
         schema:
           type: string
@@ -131,7 +131,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Merchant'
+                $ref: '#/components/schemas/Provider'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -148,11 +148,11 @@ paths:
       tags:
       - 人员
       summary: 更新单个下级信息
-      operationId: updateMerchantById
+      operationId: updateProviderById
       parameters:
-      - name: merchantId
+      - name: providerId
         in: path
-        description: 商户ID
+        description: 服务商ID
         required: true
         schema:
           type: string
@@ -160,7 +160,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/MerchantUpdateReq'
+                $ref: '#/components/schemas/ProviderUpdateReq'
       responses:
         200:
           description: 成功
@@ -177,7 +177,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/banks:
+  /agent/provider/banks:
     get:
       tags:
       - 财务
@@ -226,7 +226,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/bank:
+  /agent/provider/bank:
     post:
       tags:
       - 财务
@@ -253,7 +253,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/bank/{bankId}:
+  /agent/provider/bank/{bankId}:
     post:
       tags:
       - 财务
@@ -287,7 +287,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/withdraws:
+  /agent/provider/withdraws:
     get:
       tags:
       - 财务
@@ -336,7 +336,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/withdraw:
+  /agent/provider/withdraw:
     post:
       tags:
       - 财务
@@ -363,7 +363,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/transaction/{merchantId}:
+  /agent/provider/transaction/{providerId}:
     get:
       tags:
       - 财务
@@ -398,9 +398,9 @@ paths:
         schema:
           type: string
           format: date
-      - name: merchantId
+      - name: providerId
         in: path
-        description: 商户ID
+        description: 服务商ID
         required: true
         schema:
           type: string
@@ -432,7 +432,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/orders:
+  /agent/provider/orders:
     get:
       tags:
       - 财务
@@ -488,7 +488,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/financials:
+  /agent/provider/financials:
     get:
       tags:
       - 财务
@@ -544,7 +544,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
   
-  /agent/merchant/financial/{merchantId}:
+  /agent/provider/financial/{providerId}:
     get:
       tags:
       - 财务
@@ -579,9 +579,9 @@ paths:
         schema:
           type: string
           format: date
-      - name: merchantId
+      - name: providerId
         in: path
-        description: 商户ID
+        description: 服务商ID
         required: true
         schema:
           type: string
@@ -613,12 +613,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/teams:
+  /agent/provider/teams:
     get:
       tags: 
       - 团队
       summary: 获取团队列表信息
-      operationId: getMerchantTeams
+      operationId: getProviderTeams
       parameters: 
       - name: page
         in: query
@@ -662,16 +662,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/team/{merchantId}:
+  /agent/provider/team/{providerId}:
     get:
       tags: 
       - 团队
       summary: 获取单个下级团队信息
-      operationId: getMerchantTeamById
+      operationId: getProviderTeamById
       parameters:
-      - name: merchantId
+      - name: providerId
         in: path
-        description: 商户ID
+        description: 服务商ID
         required: true
         schema:
           type: string
@@ -788,7 +788,7 @@ components:
           type: string
           description: 提现备注
 
-    MerchantCreateReq:
+    ProviderCreateReq:
       type: object
       properties:
         username:
@@ -807,9 +807,19 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        commission:
+        supplierRechanrgeCommission:
           type: object
-          description: 佣金比例
+          description: 码商充值佣金比例
+          properties:
+            wechat:
+              type: number
+              description: 数值
+            alipay:
+              type: number
+              description: 数值
+        merchantWithdrawCommission:
+          type: object
+          description: 商户提现佣金比例
           properties:
             wechat:
               type: number
@@ -818,15 +828,25 @@ components:
               type: number
               description: 数值
 
-    MerchantUpdateReq:
+    ProviderUpdateReq:
       type: object
       properties:
         nickname:
           type: string
           description: 昵称（联系用名）
-        commission:
+        supplierRechanrgeCommission:
           type: object
-          description: 佣金比例
+          description: 码商充值佣金比例
+          properties:
+            wechat:
+              type: number
+              description: 数值
+            alipay:
+              type: number
+              description: 数值
+        merchantWithdrawCommission:
+          type: object
+          description: 商户提现佣金比例
           properties:
             wechat:
               type: number
@@ -835,12 +855,12 @@ components:
               type: number
               description: 数值
           
-    Merchant:
+    Provider:
       type: object
       properties:
         id:
           type: string
-          description: 商户ID
+          description: 服务商ID
         username:
           type: string
           description: 用户名
@@ -854,9 +874,17 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        commission:
+        supplierRechanrgeCommission:
           type: object
-          description: 佣金比例
+          description: 码商充值佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueWithType'
+            alipay:
+              $ref: '#/components/schemas/ValueWithType'
+        merchantWithdrawCommission:
+          type: object
+          description: 商户充值佣金比例
           properties:
             wechat:
               $ref: '#/components/schemas/ValueWithType'
@@ -901,9 +929,9 @@ components:
         id:
           type: string
           description: 交易ID
-        merchantId:
+        providerId:
           type: string
-          description: 商户ID
+          description: 服务商ID
         amount:
           type: number
           description: 交易金额
@@ -912,7 +940,7 @@ components:
           enum: [ordered, rebate]
           description: >
             交易类型:
-             * `ordered` - 商户下单
+             * `ordered` - 服务商下单
              * `orderedRebate` - 下单返佣
         orderId:
           type: string
@@ -928,9 +956,9 @@ components:
     OrdersStatistics:
       type: object
       properties:
-        merchantId:
+        providerId:
           type: string
-          description: 商户ID
+          description: 服务商ID
         time:
           type: string
           format: date-time
@@ -962,9 +990,9 @@ components:
     FinancialStatistics:
       type: object
       properties:
-        merchantId:
+        providerId:
           type: string
-          description: 商户ID
+          description: 服务商ID
         time:
           type: string
           format: date-time
@@ -1021,7 +1049,7 @@ components:
       properties:
         id:
           type: string
-          description: 商户ID
+          description: 服务商ID
         username:
           type: string
           description: 用户名
@@ -1038,11 +1066,11 @@ components:
         subordinateAgentCount:
           type: integer
           format: int64
-          description: 直属下级商户代理数量
+          description: 直属下级服务商代理数量
         subordinateNormalCount:
           type: integer
           format: int64
-          description: 直属下级商户数量
+          description: 直属下级服务商数量
         totalAmount:
           type: integer
           format: int64
