@@ -974,21 +974,25 @@ components:
           format: int64
           description: 总订单数量
         channels:
-          type: array
+          type: object
           description: 通道统计
-          items:
+          additionalProperties:
             type: object
             properties:
-              channel:
-                type: string
-                description: 通道类型
               totalOrderedAmount:
                 type: number
                 description: 总下单金额
               totalRebateAmount:
                 type: number
                 description: 总返佣金额
-    
+          example:
+            alipay:
+              totalOrderedAmount: 1000
+              totalRebateAmount: 10
+            wechat:
+              totalOrderedAmount: 10000
+              totalRebateAmount: 10
+
     FinancialStatisticsDetail:
       type: object
       properties:
@@ -1000,21 +1004,32 @@ components:
           type: integer
           format: int64
           description: 总订单数量
-        channels:
-          type: array
-          description: 通道统计
-          items:
+        ordered:
+          type: object
+          description: 下单分通道统计
+          additionalProperties:
             type: object
             properties:
-              channel:
-                type: string
-                description: 通道类型
-              totalOrderedAmount:
+              totalAmount:
                 type: number
-                description: 总下单金额
-              totalWithdrawAmount:
+                description: 总金额
+          example:
+            alipay:
+              totalAmount: 1000
+            wechat:
+              totalAmount: 10000
+        withdraw:
+          type: object
+          description: 提现分通道统计
+          additionalProperties:
+            type: object
+            properties:
+              totalAmount:
                 type: number
-                description: 总提现金额
+                description: 总金额
+          example:
+            bank:
+              totalAmount: 1000
 
     Team:
       type: object
