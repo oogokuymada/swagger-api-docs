@@ -286,6 +286,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      tags:
+      - 财务
+      summary: 删除银行卡
+      operationId: deleteBank
+      parameters:
+      - name: bankId
+        in: path
+        description: 银行卡ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 
   /agent/supplier/withdraws:
     get:
