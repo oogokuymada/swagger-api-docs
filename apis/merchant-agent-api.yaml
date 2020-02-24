@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.8
+  version: 1.0.2
 servers:
 - url: https://merchant-agent-api.zsf918.com/v1
 tags:
@@ -878,6 +878,8 @@ components:
           type: string
           format: phone-number
           description: 手机号
+        state:
+          $ref: '#/components/schemas/MerchantState'
         agent:
           type: boolean
           description: 是否为代理
@@ -904,7 +906,18 @@ components:
           type: string
           format: date-time
           description: 创建日期（申请日期）
-    
+
+    MerchantState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        商户状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+
     ValueWithType:
       type: object
       properties:

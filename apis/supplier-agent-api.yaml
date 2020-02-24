@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 码商代理API
-  version: 1.0.8
+  version: 1.0.9
 servers:
 - url: https://supplier-agent-api.zsf918.com/v1
 tags:
@@ -878,6 +878,8 @@ components:
           type: string
           format: phone-number
           description: 手机号
+        state:
+          $ref: '#/components/schemas/SupplierState'
         agent:
           type: boolean
           description: 是否为代理
@@ -900,11 +902,25 @@ components:
         lockAmount:
           type: number
           description: 当前账户锁定金额
+        dailyLimitAmount:
+          type: number
+          description: 日限额
         createAt:
           type: string
           format: date-time
           description: 创建日期（申请日期）
-    
+
+    SupplierState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        码商状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+
     ValueWithType:
       type: object
       properties:
