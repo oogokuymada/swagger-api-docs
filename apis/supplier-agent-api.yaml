@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 码商代理API
-  version: 1.0.9
+  version: 1.0.2
 servers:
 - url: https://supplier-agent-api.zsf918.com/v1
 tags:

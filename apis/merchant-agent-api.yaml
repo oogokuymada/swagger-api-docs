@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.2
+  version: 1.0.9
 servers:
 - url: https://merchant-agent-api.zsf918.com/v1
 tags:
