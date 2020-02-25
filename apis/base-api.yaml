@@ -1,12 +1,14 @@
 openapi: 3.0.1
 info:
   title: 基础API
-  version: 1.0.1
+  version: 1.0.2
 servers:
 - url: https://base-api.zsf918.com/v1
 tags:
 - name: 信息
   description: 信息类API
+- name: 账户
+  description: 账户类API
 paths:
   /base/banks:
     get:
@@ -56,6 +58,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /account/password/update:
+    post:
+      tags:
+        - 账户
+      summary: 更新账户登陆密码
+      operationId: updatePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    description: 响应码
+                  msg:
+                    type: string
+                    description: 响应消息
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /account/safepassword/update:
+    post:
+      tags:
+        - 账户
+      summary: 更新账户安全密码
+      operationId: updateSafePassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePassword'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    description: 响应码
+                  msg:
+                    type: string
+                    description: 响应消息
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 
 components:
   schemas:
@@ -71,6 +147,18 @@ components:
         bankState: 
           type: string
           description: 银行状态
+    UpdatePassword:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+          description: 旧密码
+        newPassword:
+          type: string
+          description: 新密码
+        confirmPassword:
+          type: string
+          description: 新密码的重复输入
 
     ApiErrorResponse:
       type: object
