@@ -39,30 +39,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-    get:
-      tags:
-      - 人员
-      summary: 获取当前用户信息
-      operationId: getSubordinate
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Merchant'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-        403:
-          description: 已授权无权限
-          content: {}
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
   /agent/merchant/subordinates:
     get:
       tags:
@@ -861,7 +837,7 @@ components:
             alipay:
               type: number
               description: 数值
-          
+
     Merchant:
       type: object
       properties:

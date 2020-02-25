@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 基础API
-  version: 1.0.2
+  version: 1.0.3
 servers:
 - url: https://base-api.zsf918.com/v1
 tags:
@@ -58,7 +58,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-  /account/password/update:
+
+  /account/profile:
+    get:
+      tags:
+      - 账户
+      summary: 获取当前用户信息
+      operationId: getProfile
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Merchant'
+                  - $ref: '#/components/schemas/Provider'
+                  - $ref: '#/components/schemas/Supplier'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /account/password:
     post:
       tags:
         - 账户
@@ -72,18 +101,7 @@ paths:
       responses:
         200:
           description: 成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    format: int32
-                    description: 响应码
-                  msg:
-                    type: string
-                    description: 响应消息
+          content: {}
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -95,7 +113,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-  /account/safepassword/update:
+
+  /account/safepassword:
     post:
       tags:
         - 账户
@@ -109,18 +128,7 @@ paths:
       responses:
         200:
           description: 成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  code:
-                    type: integer
-                    format: int32
-                    description: 响应码
-                  msg:
-                    type: string
-                    description: 响应消息
+          content: {}
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -147,6 +155,203 @@ components:
         bankState: 
           type: string
           description: 银行状态
+
+    Supplier:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 码商ID
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        state:
+          $ref: '#/components/schemas/SupplierState'
+        agent:
+          type: boolean
+          description: 是否为代理
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueWithType'
+            alipay:
+              $ref: '#/components/schemas/ValueWithType'
+        withdrawFeeType:
+          $ref: '#/components/schemas/ValueType'
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        amount:
+          type: number
+          description: 当前账户金额
+        lockAmount:
+          type: number
+          description: 当前账户锁定金额
+        dailyLimitAmount:
+          type: number
+          description: 日限额
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+
+    SupplierState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        码商状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+
+    Provider:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 服务商ID
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        state:
+          $ref: '#/components/schemas/ProviderState'
+        agent:
+          type: boolean
+          description: 是否为代理
+        supplierRechargeCommission:
+          type: object
+          description: 码商充值佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueWithType'
+            alipay:
+              $ref: '#/components/schemas/ValueWithType'
+        merchantWithdrawCommission:
+          type: object
+          description: 商户提现佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueWithType'
+            alipay:
+              $ref: '#/components/schemas/ValueWithType'
+        withdrawFeeType:
+          $ref: '#/components/schemas/ValueType'
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        amount:
+          type: number
+          description: 当前账户金额
+        lockAmount:
+          type: number
+          description: 当前账户锁定金额
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+
+    ProviderState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        服务商状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+
+    Merchant:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 商户ID
+        username:
+          type: string
+          description: 用户名
+        nickname:
+          type: string
+          description: 昵称（联系用名）
+        phone:
+          type: string
+          format: phone-number
+          description: 手机号
+        state:
+          $ref: '#/components/schemas/MerchantState'
+        agent:
+          type: boolean
+          description: 是否为代理
+        commission:
+          type: object
+          description: 佣金比例
+          properties:
+            wechat:
+              $ref: '#/components/schemas/ValueWithType'
+            alipay:
+              $ref: '#/components/schemas/ValueWithType'
+        withdrawFeeType:
+          $ref: '#/components/schemas/ValueType'
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        amount:
+          type: number
+          description: 当前账户金额
+        lockAmount:
+          type: number
+          description: 当前账户锁定金额
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+
+    MerchantState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        商户状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+ 
+    ValueWithType:
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/ValueType'
+        value:
+          type: number
+          description: 数值
+
+    ValueType:
+      type: string
+      enum: [percent, absolute]
+      description: >
+        数值类型:
+         * `percent` - 百分比
+         * `absolute` - 绝对值
+
     UpdatePassword:
       type: object
       properties:
