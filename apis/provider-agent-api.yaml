@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 服务商代理API
-  version: 1.0.0
+  version: 1.0.2
 servers:
 - url: https://provider-agent-api.zsf918.com/v1
 tags:
@@ -271,6 +271,33 @@ paths:
           application/json:
             schema:
                 $ref: '#/components/schemas/BankCreateOrUpdateReq'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      tags:
+      - 财务
+      summary: 删除银行卡
+      operationId: deleteBank
+      parameters:
+      - name: bankId
+        in: path
+        description: 银行卡ID
+        required: true
+        schema:
+          type: string
       responses:
         200:
           description: 成功
@@ -807,7 +834,7 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        supplierRechanrgeCommission:
+        supplierRechargeCommission:
           type: object
           description: 码商充值佣金比例
           properties:
@@ -834,7 +861,7 @@ components:
         nickname:
           type: string
           description: 昵称（联系用名）
-        supplierRechanrgeCommission:
+        supplierRechargeCommission:
           type: object
           description: 码商充值佣金比例
           properties:
@@ -871,10 +898,12 @@ components:
           type: string
           format: phone-number
           description: 手机号
+        state:
+          $ref: '#/components/schemas/ProviderState'
         agent:
           type: boolean
           description: 是否为代理
-        supplierRechanrgeCommission:
+        supplierRechargeCommission:
           type: object
           description: 码商充值佣金比例
           properties:
@@ -884,7 +913,7 @@ components:
               $ref: '#/components/schemas/ValueWithType'
         merchantWithdrawCommission:
           type: object
-          description: 商户充值佣金比例
+          description: 商户提现佣金比例
           properties:
             wechat:
               $ref: '#/components/schemas/ValueWithType'
@@ -905,7 +934,18 @@ components:
           type: string
           format: date-time
           description: 创建日期（申请日期）
-    
+
+    ProviderState:
+      type: string
+      enum: [ban, enable, lock, underReview, reviewReject]
+      description: >
+        服务商状态:
+         * `ban` - 封禁
+         * `enable` - 启用
+         * `lock` - 锁定
+         * `underReview` - 审核中
+         * `reviewReject` - 拒绝
+
     ValueWithType:
       type: object
       properties:
