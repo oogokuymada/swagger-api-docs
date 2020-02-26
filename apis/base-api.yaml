@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 基础API
-  version: 1.0.4
+  version: 1.0.5
 servers:
 - url: https://base-api.zsf918.com/v1
 tags:
@@ -211,6 +211,10 @@ components:
         dailyLimitAmount:
           type: number
           description: 日限额
+        lastOnlineAt:
+          type: number
+          format: date-time
+          description: 最后在线时间
         createAt:
           type: string
           format: date-time
@@ -275,6 +279,10 @@ components:
         lockAmount:
           type: number
           description: 当前账户锁定金额
+        lastOnlineAt:
+          type: number
+          format: date-time
+          description: 最后在线时间
         createAt:
           type: string
           format: date-time
@@ -331,6 +339,10 @@ components:
         lockAmount:
           type: number
           description: 当前账户锁定金额
+        lastOnlineAt:
+          type: number
+          format: date-time
+          description: 最后在线时间
         createAt:
           type: string
           format: date-time
