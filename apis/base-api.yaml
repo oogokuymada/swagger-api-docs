@@ -212,7 +212,7 @@ components:
           type: number
           description: 日限额
         lastOnlineAt:
-          type: number
+          type: string
           format: date-time
           description: 最后在线时间
         createAt:
@@ -280,7 +280,7 @@ components:
           type: number
           description: 当前账户锁定金额
         lastOnlineAt:
-          type: number
+          type: string
           format: date-time
           description: 最后在线时间
         createAt:
@@ -340,7 +340,7 @@ components:
           type: number
           description: 当前账户锁定金额
         lastOnlineAt:
-          type: number
+          type: string
           format: date-time
           description: 最后在线时间
         createAt:
