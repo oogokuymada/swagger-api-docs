@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 基础API
-  version: 1.0.3
+  version: 1.0.4
 servers:
 - url: https://base-api.zsf918.com/v1
 tags:
@@ -31,6 +31,11 @@ paths:
         schema:
           type: number
           default: 10
+      - name: state
+        in: query
+        description: 银行状态
+        schema:
+          $ref: '#/components/schemas/BankState'
       responses:
         200:
           description: 成功
@@ -149,12 +154,19 @@ components:
         id:
           type: string
           description: 银行id
-        bankName: 
+        name: 
           type: string
           description: 银行名称
-        bankState: 
-          type: string
-          description: 银行状态
+        state: 
+          $ref: '#/components/schemas/BankState'
+
+    BankState:
+      type: string
+      enum: [enable, disable]
+      description: >
+        银行状态:
+         * `enable` - 启用
+         * `disable` - 禁用
 
     Supplier:
       type: object
