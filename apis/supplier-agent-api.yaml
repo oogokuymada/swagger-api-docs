@@ -173,7 +173,7 @@ paths:
       tags:
       - 财务
       summary: 获取银行卡列表
-      operationId: listBanks
+      operationId: listBankCards
       parameters:
       - name: page
         in: query
@@ -227,7 +227,7 @@ paths:
       tags:
       - 财务
       summary: 创建银行卡
-      operationId: createBank
+      operationId: createBankCard
       requestBody:
         content:
           application/json:
@@ -249,14 +249,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/supplier/bankCard/{bankId}:
+  /agent/supplier/bankCard/{bankCardId}:
     post:
       tags:
       - 财务
       summary: 编辑银行卡
       operationId: updateBank
       parameters:
-      - name: bankId
+      - name: bankCardId
         in: path
         description: 银行卡ID
         required: true
@@ -286,9 +286,9 @@ paths:
       tags:
       - 财务
       summary: 删除银行卡
-      operationId: deleteBank
+      operationId: deleteBankCard
       parameters:
-      - name: bankId
+      - name: bankCardId
         in: path
         description: 银行卡ID
         required: true
@@ -792,7 +792,7 @@ components:
         id:
           type: string
           description: 提现ID
-        bankId:
+        bankCardId:
           type: string
           description: 银行卡ID
         amount:
@@ -836,7 +836,7 @@ components:
     WithdrawCreateReq:
       type: object
       properties:
-        bankId:
+        bankCardId:
           type: string
           description: 银行卡ID
         amount:
