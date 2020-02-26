@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 码商代理API
-  version: 1.0.2
+  version: 1.0.3
 servers:
 - url: https://supplier-agent-api.zsf918.com/v1
 tags:
@@ -60,6 +60,21 @@ paths:
         schema:
           type: number
           default: 10
+      - name: agent
+        in: query
+        description: 是否为代理
+        schema:
+          type: boolean
+      - name: state
+        in: query
+        description: 下级状态
+        schema:
+          $ref: '#/components/schemas/SupplierState'
+      - name: q
+        in: query
+        description: ID｜手机号｜用户名
+        schema:
+          type: string
       responses:
         200:
           description: 成功
@@ -153,7 +168,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/supplier/banks:
+  /agent/supplier/bankCards:
     get:
       tags:
       - 财务
@@ -174,6 +189,11 @@ paths:
         schema:
           type: number
           default: 10
+      - name: state
+        in: query
+        description: 银行卡状态
+        schema:
+          $ref: '#/components/schemas/BankCardState'
       responses:
         200:
           description: 成功
@@ -189,7 +209,7 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Bank'
+                      $ref: '#/components/schemas/BankCard'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -202,7 +222,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/supplier/bank:
+  /agent/supplier/bankCard:
     post:
       tags:
       - 财务
@@ -212,7 +232,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -229,7 +249,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/supplier/bank/{bankId}:
+  /agent/supplier/bankCard/{bankId}:
     post:
       tags:
       - 财务
@@ -246,7 +266,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -311,6 +331,28 @@ paths:
         schema:
           type: number
           default: 10
+      - name: state
+        in: query
+        description: 提现状态
+        schema:
+          $ref: '#/components/schemas/WithdrawState'
+      - name: fromTime
+        in: query
+        description: 开始日期
+        schema:
+          type: string
+          format: date-time
+      - name: toTime
+        in: query
+        description: 结束日期
+        schema:
+          type: string
+          format: date-time
+      - name: accountName
+        in: query
+        description: 开户名
+        schema:
+          type: string
       responses:
         200:
           description: 成功
@@ -698,41 +740,49 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
 components:
   schemas:
-    Bank:
+    BankCard:
       type: object
       properties:
         id:
           type: string
           description: 银行卡id
-        bankAccount:
-          type: string
-          description: 银行开户名
-        bankName: 
+        name: 
           type: string
           description: 银行名称
-        bankCard: 
+        account:
+          type: string
+          description: 银行开户名
+        cardNumber: 
           type: string
           description: 银行卡号
-        bankAddress: 
+        address: 
           type: string
           description: 银行地址
         state:
-          type: string
-          description: 银行卡状态
+          $ref: '#/components/schemas/BankCardState'
 
-    BankCreateOrUpdateReq:
+    BankCardState:
+      type: string
+      enum: [enable, disable, delete]
+      description: >
+        银行卡状态:
+         * `enable` - 启用
+         * `disable` - 禁用
+         * `delete` - 已删除
+
+    BankCardCreateOrUpdateReq:
       type: object
       properties:
         bankId: 
           type: string
           description: 银行Id
-        bankAccount:
+        account:
           type: string
           description: 银行开户名
-        bankCard: 
+        cardNumber: 
           type: string
           description: 银行卡号
-        bankAddress: 
+        address: 
           type: string
           description: 银行地址
 
@@ -755,8 +805,7 @@ components:
           type: number
           description: 实际到账金额
         state:
-          type: string
-          description: 提现状态
+          $ref: '#/components/schemas/WithdrawState'
         payCredit:
           type: string
           description: 支付凭证
@@ -774,6 +823,15 @@ components:
         reviewNote:
           type: string
           description: 审核备注
+    
+    WithdrawState:
+      type: string
+      enum: [underReview, success, reject]
+      description: >
+        提现状态:
+         * `underReview` - 审核中
+         * `success` - 成功
+         * `reject` - 拒绝
 
     WithdrawCreateReq:
       type: object
@@ -881,6 +939,10 @@ components:
         dailyLimitAmount:
           type: number
           description: 日限额
+        lastOnlineAt:
+          type: string
+          format: date-time
+          description: 最后在线时间
         createAt:
           type: string
           format: date-time
