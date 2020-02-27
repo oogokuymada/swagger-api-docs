@@ -792,9 +792,18 @@ components:
         id:
           type: string
           description: 提现ID
-        bankCardId:
+        bankName:
           type: string
-          description: 银行卡ID
+          description: 银行名称
+        bankCardAccount:
+          type: string
+          description: 银行卡账户名
+        bankCardNumber:
+          type: string
+          description: 银行卡号
+        bankCardAddress:
+          type: string
+          description: 银行卡支行地址
         amount:
           type: number
           description: 金额
