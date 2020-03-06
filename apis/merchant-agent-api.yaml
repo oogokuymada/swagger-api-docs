@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户代理API
-  version: 1.0.9
+  version: 1.1.0
 servers:
 - url: https://merchant-agent-api.zsf918.com/v1
 tags:
@@ -9,6 +9,8 @@ tags:
   description: 人员类API
 - name: 财务
   description: 财务类API
+- name: 统计
+  description: 统计类API
 - name: 团队
   description: 团队类API
 paths:
@@ -435,12 +437,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/orders:
+  /agent/merchant/statistics/ordered:
     get:
       tags:
-      - 财务
+      - 统计
       summary: 获取下级订单统计列表
-      operationId: getSubordinateOrdersStatistics
+      operationId: getSubordinateOrderedStatistics
       parameters:
       - name: page
         in: query
@@ -456,9 +458,16 @@ paths:
         schema:
           type: number
           default: 10
-      - name: time
+      - name: fromTime
         in: query
-        description: 日期
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
         required: true
         schema:
           type: string
@@ -478,7 +487,7 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/OrdersStatistics'
+                      $ref: '#/components/schemas/OrderedStatistics'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -491,12 +500,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/merchant/financials:
+  /agent/merchant/statistics/withdraw:
     get:
       tags:
-      - 财务
-      summary: 获取下级财务统计列表
-      operationId: getSubordinateFinancials
+      - 统计
+      summary: 获取下级提现统计列表
+      operationId: getSubordinateWithdrawStatistics
       parameters:
       - name: page
         in: query
@@ -512,9 +521,16 @@ paths:
         schema:
           type: number
           default: 10
-      - name: time
+      - name: fromTime
         in: query
-        description: 日期
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
         required: true
         schema:
           type: string
@@ -534,7 +550,7 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/FinancialStatistics'
+                      $ref: '#/components/schemas/WithdrawStatistics'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -546,13 +562,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-  
-  /agent/merchant/financial/{merchantId}:
+
+  /agent/merchant/statistics/{merchantId}/ordered:
     get:
       tags:
-      - 财务
-      summary: 获取单个下级财务统计列表
-      operationId: getSubordinateFinancialsById
+      - 统计
+      summary: 获取单个下级订单统计列表
+      operationId: getSubordinateOrderedById
       parameters:
       - name: page
         in: query
@@ -603,7 +619,76 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/FinancialStatisticsDetail'
+                      $ref: '#/components/schemas/OrderedStatisticsDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /agent/merchant/statistics/{merchantId}/withdraw:
+    get:
+      tags:
+      - 统计
+      summary: 获取单个下级提现统计列表
+      operationId: getSubordinateWithdrawById
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: fromTime
+        in: query
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: merchantId
+        in: path
+        description: 商户ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderedStatisticsDetail'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -941,111 +1026,112 @@ components:
           format: date-time
           description: 创建日期
     
-    OrdersStatistics:
+    OrderedStatistics:
       type: object
       properties:
         merchantId:
           type: string
           description: 商户ID
-        time:
-          type: string
-          format: date-time
-          description: 统计日期
-        totalOrders:
-          type: integer
-          format: int64
-          description: 总订单数量
-        channels:
-          type: array
-          description: 通道统计
-          items:
-            type: object
-            properties:
-              channel:
-                type: string
-                description: 通道类型
-              successOrders:
-                type: integer
-                format: int64
-                description: 成功订单数
-              totalOrdersAmount:
-                type: number
-                description: 总订单金额
-              totalSuccessOrdersAmount:
-                type: number
-                description: 总成功订单金额
+        channel:
+          $ref: '#/components/schemas/OrderedStatisticsChannel'
     
-    FinancialStatistics:
+    WithdrawStatistics:
       type: object
       properties:
         merchantId:
           type: string
           description: 商户ID
-        time:
-          type: string
-          format: date-time
-          description: 统计日期
-        totalOrders:
-          type: integer
-          format: int64
-          description: 总订单数量
-        channels:
-          type: object
-          description: 通道统计
-          additionalProperties:
-            type: object
-            properties:
-              totalOrderedAmount:
-                type: number
-                description: 总下单金额
-              totalRebateAmount:
-                type: number
-                description: 总返佣金额
-          example:
-            alipay:
-              totalOrderedAmount: 1000
-              totalRebateAmount: 10
-            wechat:
-              totalOrderedAmount: 10000
-              totalRebateAmount: 10
+        channel:
+          $ref: '#/components/schemas/WithdrawStatisticsChannel'
 
-    FinancialStatisticsDetail:
+    OrderedStatisticsDetail:
       type: object
       properties:
         time:
           type: string
           format: date-time
           description: 统计日期
-        totalOrders:
-          type: integer
-          format: int64
-          description: 总订单数量
-        ordered:
-          type: object
-          description: 下单分通道统计
-          additionalProperties:
-            type: object
-            properties:
-              totalAmount:
-                type: number
-                description: 总金额
-          example:
-            alipay:
-              totalAmount: 1000
-            wechat:
-              totalAmount: 10000
-        withdraw:
-          type: object
-          description: 提现分通道统计
-          additionalProperties:
-            type: object
-            properties:
-              totalAmount:
-                type: number
-                description: 总金额
-          example:
-            bank:
-              totalAmount: 1000
+        channel:
+          $ref: '#/components/schemas/OrderedStatisticsChannel'
+              
+    WithdrawStatisticsDetail:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: 统计日期
+        channel:
+          $ref: '#/components/schemas/WithdrawStatisticsChannel'
+    
+    OrderedStatisticsChannel:
+      type: object
+      description: 通道统计
+      additionalProperties:
+        type: object
+        properties:
+          totalOrders:
+            type: integer
+            format: int64
+            description: 总订单数
+          successOrders:
+            type: integer
+            format: int64
+            description: 总成功订单数
+          totalOrdersAmount:
+            type: number
+            description: 总订单金额
+          totalSuccessOrdersAmount:
+            type: number
+            description: 总成功订单金额
+          totalRebateAmount:
+            type: number
+            description: 总返佣金额
+      example:
+        alipay:
+          totalOrders: 100
+          successOrders: 80
+          totalOrdersAmount: 10000
+          totalSuccessOrdersAmount: 8000
+          totalRebateAmount: 100
+        wechat:
+          totalOrders: 100
+          successOrders: 100
+          totalOrdersAmount: 10000
+          totalSuccessOrdersAmount: 8000
+          totalRebateAmount: 100
+
+    WithdrawStatisticsChannel:
+      type: object
+      description: 通道统计
+      additionalProperties:
+        type: object
+        properties:
+          totalOrders:
+            type: integer
+            format: int64
+            description: 总订单数
+          successOrders:
+            type: integer
+            format: int64
+            description: 总成功订单数
+          totalOrdersAmount:
+            type: number
+            description: 总订单金额
+          totalSuccessOrdersAmount:
+            type: number
+            description: 总成功订单金额
+      example:
+        alipay:
+          totalOrders: 100
+          successOrders: 80
+          totalOrdersAmount: 10000
+          totalSuccessOrdersAmount: 8000
+        wechat:
+          totalOrders: 100
+          successOrders: 100
+          totalOrdersAmount: 10000
+          totalSuccessOrdersAmount: 8000
 
     Team:
       type: object
