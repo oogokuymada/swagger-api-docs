@@ -1,0 +1,648 @@
+openapi: 3.0.1
+info:
+  title: 商户 API
+  version: 1.0.0
+servers:
+- url: https://merchant-api.zsf918.com/v1
+tags:
+- name: 订单
+  description: 订单类API
+- name: 财务
+  description: 财务类API
+- name: 统计
+  description: 统计类API
+- name: ACL
+  description: ACL类API
+paths:
+  /merchant/orders:
+    get:
+      tags:
+      - 订单
+      summary: 获取订单列表
+      operationId: getMerchantOrdersList
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: channelType
+        in: query
+        description: 通道类型
+        schema:
+          $ref: '#/components/schemas/MerchantChannelType'
+      - name: state
+        in: query
+        description: 订单状态
+        schema:
+          $ref: '#/components/schemas/MerchantOrderState'
+      - name: merchantOrderId
+        in: query
+        description: 商户订单号
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MerchantOrder'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/banks:
+    get:
+      tags:
+      - 财务
+      summary: 获取银行卡列表
+      operationId: listMerchantBanks
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Bank'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/bank:
+    post:
+      tags:
+      - 财务
+      summary: 创建银行卡
+      operationId: createMerchantBank
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/bank/{bankId}:
+    post:
+      tags:
+      - 财务
+      summary: 编辑银行卡
+      operationId: updateMerchantBank
+      parameters:
+      - name: bankId
+        in: path
+        description: 银行卡ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      tags:
+      - 财务
+      summary: 删除银行卡
+      operationId: deleteMerchantBank
+      parameters:
+      - name: bankId
+        in: path
+        description: 银行卡ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/withdraws:
+    get:
+      tags:
+      - 财务
+      summary: 获取提现申请列表
+      operationId: listMerchantWithdraws
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      responses:
+        200:
+          description: 成功
+          content:  
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Withdraw'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/withdraw:
+    post:
+      tags:
+      - 财务
+      summary: 创建提现申请
+      operationId: createMerchantWithdraw
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/WithdrawCreateReq'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/statictics/orders:
+    get:
+      tags:
+      - 统计
+      summary: 获取订单统计列表(按天统计)
+      operationId: getMerchantOrderedStatisticsGroupByDay
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: fromTime
+        in: query
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderedStatistics'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/transactions:
+    get:
+      tags:
+      - 统计
+      summary: 获取交易列表
+      operationId: getMerchantTransactions
+      parameters:
+      - name: page
+        in: query
+        description: 页数
+        required: true
+        schema:
+          type: number
+          default: 1
+      - name: size
+        in: query
+        description: 页大小
+        required: true
+        schema:
+          type: number
+          default: 10
+      - name: fromTime
+        in: query
+        description: 开始日期
+        required: true
+        schema:
+          type: string
+          format: date
+      - name: toTime
+        in: query
+        description: 结束日期
+        required: true
+        schema:
+          type: string
+          format: date
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+components:
+  schemas:
+    MerchantOrder:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: 系统订单号
+        merchantOrderId:
+          type: string
+          description: 商户订单号
+        amount:
+          type: string
+          description: 订单金额
+        paidAmount:
+          type: string
+          description: 实付金额
+        fee:
+          type: string
+          description: 手续费
+        state:
+          $ref: '#/components/schemas/MerchantOrderState'
+        channelType:
+          $ref: '#/components/schemas/MerchantChannelType'
+        createAt:
+          type: string
+          format: date-time
+          description: 下单时间
+        paidAt:
+          type: string
+          format: date-time
+          description: 支付时间
+          
+    MerchantOrderState:
+      type: string
+      enum: [unpaid, paid, cancel]
+      description: >
+        订单状态:
+         * `unpaid` - 未支付
+         * `paid` - 已支付
+         * `cancel` - 已取消
+
+    MerchantChannelType:
+      type: string
+      enum: [wechat, alipay]
+      description: >
+        支付通道:
+         * `wechat` - 微信支付
+         * `paid` - 支付宝
+
+    Bank:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 银行卡id
+        bankAccount:
+          type: string
+          description: 银行开户名
+        bankName: 
+          type: string
+          description: 银行名称
+        bankCard: 
+          type: string
+          description: 银行卡号
+        bankAddress: 
+          type: string
+          description: 银行地址
+        state:
+          type: string
+          description: 银行卡状态
+
+    BankCreateOrUpdateReq:
+      type: object
+      properties:
+        bankId: 
+          type: string
+          description: 银行Id
+        bankAccount:
+          type: string
+          description: 银行开户名
+        bankCard: 
+          type: string
+          description: 银行卡号
+        bankAddress: 
+          type: string
+          description: 银行地址
+
+    Withdraw:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 提现ID
+        bankAccount:
+          type: string
+          description: 银行开户名
+        bankName: 
+          type: string
+          description: 银行名称
+        bankCard: 
+          type: string
+          description: 银行卡号
+        bankAddress: 
+          type: string
+          description: 银行地址
+        amount:
+          type: number
+          description: 金额
+        fee:
+          type: number
+          description: 手续费
+        actualAmount:
+          type: number
+          description: 实际到账金额
+        state:
+          type: string
+          description: 提现状态
+        payCredit:
+          type: string
+          description: 支付凭证
+        payAt:
+          type: string
+          format: date-time
+          description: 支付日期
+        createAt:
+          type: string
+          format: date-time
+          description: 创建日期（申请日期）
+        note:
+          type: string
+          description: 提现备注
+        reviewNote:
+          type: string
+          description: 审核备注
+
+    WithdrawCreateReq:
+      type: object
+      properties:
+        bankId:
+          type: string
+          description: 银行卡ID
+        amount:
+          type: number
+          description: 金额
+        secretPassword:
+          type: string
+          description: 安全密码
+        note:
+          type: string
+          description: 提现备注
+
+    OrderedStatistics:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date-time
+          description: 日期
+        totalOrders:
+          type: integer
+          format: int64
+          description: 总订单数
+        paidOrders:
+          type: integer
+          format: int64
+          description: 已支付订单数
+        totalOrdersAmount:
+          type: number
+          description: 总订单金额
+        totalPaidOrdersAmount:
+          type: number
+          description: 总支付订单金额
+        totalFee:
+          type: number
+          description: 总手续费
+        totalActualAmount:
+          type: number
+          description: 总到账金额
+          
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id
+        type:
+          $ref: '#/components/schemas/TransactionType'
+        amount:
+          type: number
+          description: 变动金额
+        date:
+          type: string
+          format: date-time
+          description: 日期
+        associatedOrderType:
+          type: string
+          description: 关联订单类型(没有则为空)
+        associatedOrderId: 
+          type: string
+          description: 关联订单Id(没有则为空)
+    
+    TransactionType:
+      type: string
+      enum: [orderSuccess, withdraw, withdrawFaild, systemAdd, systemSub]
+      description: >
+        订单状态:
+         * `orderSuccess` - 下单成功(余额增加)
+         * `withdraw` - 提现(余额减少)
+         * `withdrawFaild` - 提现失败(余额增加)
+         * `systemAdd` - 后台增加余额(余额增加)
+         * `systemSub` - 后台减少余额(余额减少)
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: text
+
+security:
+  - bearerAuth: []
