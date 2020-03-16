@@ -153,7 +153,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/provider/banks:
+  /agent/provider/bankCards:
     get:
       tags:
       - 财务
@@ -202,7 +202,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/provider/bank:
+  /agent/provider/bankCard:
     post:
       tags:
       - 财务
@@ -229,7 +229,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /agent/provider/bank/{bankId}:
+  /agent/provider/bankCard/{bankId}:
     post:
       tags:
       - 财务
