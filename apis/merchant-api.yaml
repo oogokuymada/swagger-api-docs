@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户 API
-  version: 1.0.0
+  version: 1.0.1
 servers:
 - url: https://merchant-api.zsf918.com/v1
 tags:
