@@ -3,43 +3,45 @@ info:
   title: 基础API
   version: 1.0.5
 servers:
-- url: https://base-api.zsf918.com/v1
+  - url: https://base-api.zsf918.com/v1
 tags:
-- name: 信息
-  description: 信息类API
-- name: 账户
-  description: 账户类API
+  - name: 信息
+    description: 信息类API
+  - name: 系统
+    description: 系统类API
+  - name: 账户
+    description: 账户类API
 paths:
   /base/banks:
     get:
       tags:
-      - 信息
+        - 信息
       summary: 获取银行列表
       operationId: listBanks
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: state
-        in: query
-        description: 银行状态
-        schema:
-          $ref: '#/components/schemas/BankState'
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: state
+          in: query
+          description: 银行状态
+          schema:
+            $ref: '#/components/schemas/BankState'
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -67,7 +69,7 @@ paths:
   /account/profile:
     get:
       tags:
-      - 账户
+        - 账户
       summary: 获取当前用户信息
       operationId: getProfile
       responses:
@@ -146,6 +148,68 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
+  /sys/login:
+    post:
+      tags:
+        - 系统
+      summary: 系统登陆
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/GoogleLoginResult'
+                  - $ref: '#/components/schemas/LoginResult'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /sys/google-check:
+    post:
+      tags:
+        - 系统
+      summary: 谷歌验证
+      operationId: googleCheck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleCheck'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
 components:
   schemas:
     Bank:
@@ -154,10 +218,10 @@ components:
         id:
           type: string
           description: 银行id
-        name: 
+        name:
           type: string
           description: 银行名称
-        state: 
+        state:
           $ref: '#/components/schemas/BankState'
 
     BankState:
@@ -358,7 +422,7 @@ components:
          * `lock` - 锁定
          * `underReview` - 审核中
          * `reviewReject` - 拒绝
- 
+
     ValueWithType:
       type: object
       properties:
@@ -389,6 +453,172 @@ components:
           type: string
           description: 新密码的重复输入
 
+
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+        smsCode:
+          type: string
+          description: 短信验证码, 当不采用谷歌登陆时需要传
+        type:
+          $ref: '#/components/schemas/AccountType'
+        googleAuthenticator:
+          type: boolean
+          description: 是否采用谷歌登陆
+
+    AccountType:
+      type: string
+      enum: [supplier, server, business]
+      description: >
+        账户类型:
+          * `supplier` - 码商
+          * `server`  - 服务商
+          * `business` - 商户
+
+    GoogleCheck:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 谷歌登陆返回的UUID
+        googleCode:
+          type: string
+          description: 谷歌验证码
+
+    GoogleLoginResult:
+      type: object
+      properties:
+        uuid:
+          type: string
+          description: 返回的UUID，需在谷歌验证接口带上
+        googleBarCodeUri:
+          type: string
+          description: 谷歌验证的二维码，当账户不存在谷歌密钥时返回，供GoogleAuthenticator使用
+
+    LoginResult:
+      type: object
+      properties:
+        token:
+          type: string
+          description: 用户Token
+        expire:
+          type: number
+          description: Token过期时间
+        user:
+          oneOf:
+            - $ref: '#/components/schemas/LoginSupplier'
+            - $ref: '#/components/schemas/LoginMerchant'
+
+    LoginSupplier:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        name:
+          type: string
+          description: 联系名称
+        mobile:
+          type: string
+          description: 手机号码
+        money:
+          type: number
+          description: 返佣
+        balance:
+          type: number
+          description: 跑分余额
+        lockMoney:
+          type: number
+          description: 锁定金额
+        withdrawMomney:
+          type: number
+          description: 提现总金额
+        rebateMoney:
+          type: number
+          description: 分佣总金额
+        dayLimit:
+          type: integer
+          description: 每日限额
+        wxRate:
+          type: number
+          description: 微信费率
+        wxRateType:
+          type: integer
+          description: 微信费率计算方式，1-百分比|2-绝对值
+        aliRate:
+          type: number
+          description: 支付宝费率
+        aliRateType:
+          type: integer
+          description: 支付宝费率计算方式，1-百分比|2-绝对值
+        withdrawRatio:
+          type: number
+          description: 码商提现手续费比率
+        withdrawFeeType:
+          type: number
+          description: 码商提现手续费计算类型，1百分比；2绝对值
+
+    LoginMerchant:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 联系名称
+        mobile:
+          type: string
+          description: 手机号码
+        money:
+          type: number
+          description: 余额
+        lockMoney:
+          type: number
+          description: 锁定金额
+        withdrawMomney:
+          type: number
+          description: 提现总金额
+        rebateMoney:
+          type: number
+          description: 分佣总金额
+        wxRate:
+          type: number
+          description: 微信费率
+        wxRateType:
+          type: integer
+          description: 微信费率计算方式，1-百分比|2-绝对值
+        aliRate:
+          type: number
+          description: 支付宝费率
+        aliRateType:
+          type: integer
+          description: 支付宝费率计算方式，1-百分比|2-绝对值
+        minPay:
+          type: number
+          description: 下单最小金额
+        maxPay:
+          type: number
+          description: 下单最大金额
+        aesKey:
+          type: string
+          description: 商户 aes key
+        aesIv:
+          type: string
+          description: 商户 aes iv
+        minWithdraw:
+          type: number
+          description: 最小提现金额
+        maxWithdraw:
+          type: number
+          description: 最大提现金额
+        withdrawFee:
+          type: number
+          description: 提现手续费
+
     ApiErrorResponse:
       type: object
       properties:
@@ -401,7 +631,7 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
-      
+
   securitySchemes:
     bearerAuth:
       type: http
