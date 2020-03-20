@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户 API
-  version: 1.0.1
+  version: 1.0.2
 servers:
 - url: https://merchant-api.zsf918.com/v1
 tags:
@@ -460,7 +460,7 @@ components:
       description: >
         支付通道:
          * `wechat` - 微信支付
-         * `paid` - 支付宝
+         * `alipay` - 支付宝
 
     BankCard:
       type: object
@@ -536,8 +536,7 @@ components:
           type: number
           description: 实际到账金额
         state:
-          type: string
-          description: 提现状态
+          $ref: '#/components/schemas/WithdrawState'
         payCredit:
           type: string
           description: 支付凭证
@@ -555,6 +554,17 @@ components:
         reviewNote:
           type: string
           description: 审核备注
+
+    WithdrawState:
+      type: string
+      enum: [new, unpaid, underReview, complete, cancel]
+      description: >
+        提现状态:
+         * `new` - 新增
+         * `unpaid` - 未支付
+         * `underReview` - 等待审核
+         * `complete` - 已完成
+         * `cancel` - 已取消
 
     WithdrawCreateReq:
       type: object
@@ -624,12 +634,12 @@ components:
     
     TransactionType:
       type: string
-      enum: [orderSuccess, withdraw, withdrawFaild, systemAdd, systemSub]
+      enum: [orderSuccess, withdraw, withdrawFailed, systemAdd, systemSub]
       description: >
         订单状态:
          * `orderSuccess` - 下单成功(余额增加)
          * `withdraw` - 提现(余额减少)
-         * `withdrawFaild` - 提现失败(余额增加)
+         * `withdrawFailed` - 提现失败(余额增加)
          * `systemAdd` - 后台增加余额(余额增加)
          * `systemSub` - 后台减少余额(余额减少)
 
