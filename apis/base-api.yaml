@@ -94,7 +94,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /account/password:
+  /account/password/update:
     post:
       tags:
         - 账户
@@ -121,7 +121,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /account/safepassword:
+  /account/safepassword/update:
     post:
       tags:
         - 账户
@@ -165,9 +165,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
-                  - $ref: '#/components/schemas/GoogleLoginResult'
-                  - $ref: '#/components/schemas/LoginResult'
+                $ref: '#/components/schemas/LoginResult'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -180,24 +178,47 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /sys/google-check:
-    post:
+  /sys/google-code:
+    get:
       tags:
         - 系统
-      summary: 谷歌验证
-      operationId: googleCheck
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GoogleCheck'
+      summary: 获取谷歌绑定的二维码
+      operationId: googleCode
       responses:
         200:
           description: 成功
           content:
+            text/plain:
+              schema:
+                type: string
+                description: 谷歌绑定二维码链接
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResult'
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /sys/google-reset:
+    post:
+      tags:
+        - 系统
+      summary: 重置谷歌绑定
+      operationId: googleCode
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleReset'
+      responses:
+        200:
+          description: 成功
+          content: {}
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -465,7 +486,10 @@ components:
           description: 密码
         smsCode:
           type: string
-          description: 短信验证码, 当不采用谷歌登陆时需要传
+          description: 短信验证码, 短信登陆
+        googleCode:
+          type: string
+          description: Google验证码, Google登陆
         type:
           $ref: '#/components/schemas/AccountType'
         googleAuthenticator:
@@ -481,26 +505,6 @@ components:
           * `server`  - 服务商
           * `business` - 商户
 
-    GoogleCheck:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: 谷歌登陆返回的UUID
-        googleCode:
-          type: string
-          description: 谷歌验证码
-
-    GoogleLoginResult:
-      type: object
-      properties:
-        uuid:
-          type: string
-          description: 返回的UUID，需在谷歌验证接口带上
-        googleBarCodeUri:
-          type: string
-          description: 谷歌验证的二维码，当账户不存在谷歌密钥时返回，供GoogleAuthenticator使用
-
     LoginResult:
       type: object
       properties:
@@ -510,114 +514,13 @@ components:
         expire:
           type: number
           description: Token过期时间
-        user:
-          oneOf:
-            - $ref: '#/components/schemas/LoginSupplier'
-            - $ref: '#/components/schemas/LoginMerchant'
 
-    LoginSupplier:
+    GoogleReset:
       type: object
       properties:
-        username:
+        smsCode:
           type: string
-          description: 用户名
-        name:
-          type: string
-          description: 联系名称
-        mobile:
-          type: string
-          description: 手机号码
-        money:
-          type: number
-          description: 返佣
-        balance:
-          type: number
-          description: 跑分余额
-        lockMoney:
-          type: number
-          description: 锁定金额
-        withdrawMomney:
-          type: number
-          description: 提现总金额
-        rebateMoney:
-          type: number
-          description: 分佣总金额
-        dayLimit:
-          type: integer
-          description: 每日限额
-        wxRate:
-          type: number
-          description: 微信费率
-        wxRateType:
-          type: integer
-          description: 微信费率计算方式，1-百分比|2-绝对值
-        aliRate:
-          type: number
-          description: 支付宝费率
-        aliRateType:
-          type: integer
-          description: 支付宝费率计算方式，1-百分比|2-绝对值
-        withdrawRatio:
-          type: number
-          description: 码商提现手续费比率
-        withdrawFeeType:
-          type: number
-          description: 码商提现手续费计算类型，1百分比；2绝对值
-
-    LoginMerchant:
-      type: object
-      properties:
-        name:
-          type: string
-          description: 联系名称
-        mobile:
-          type: string
-          description: 手机号码
-        money:
-          type: number
-          description: 余额
-        lockMoney:
-          type: number
-          description: 锁定金额
-        withdrawMomney:
-          type: number
-          description: 提现总金额
-        rebateMoney:
-          type: number
-          description: 分佣总金额
-        wxRate:
-          type: number
-          description: 微信费率
-        wxRateType:
-          type: integer
-          description: 微信费率计算方式，1-百分比|2-绝对值
-        aliRate:
-          type: number
-          description: 支付宝费率
-        aliRateType:
-          type: integer
-          description: 支付宝费率计算方式，1-百分比|2-绝对值
-        minPay:
-          type: number
-          description: 下单最小金额
-        maxPay:
-          type: number
-          description: 下单最大金额
-        aesKey:
-          type: string
-          description: 商户 aes key
-        aesIv:
-          type: string
-          description: 商户 aes iv
-        minWithdraw:
-          type: number
-          description: 最小提现金额
-        maxWithdraw:
-          type: number
-          description: 最大提现金额
-        withdrawFee:
-          type: number
-          description: 提现手续费
+          description: 短信验证码，重置绑定需要发送短信
 
     ApiErrorResponse:
       type: object
