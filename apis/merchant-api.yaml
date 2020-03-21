@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: 商户 API
-  version: 1.0.0
+  version: 1.0.2
 servers:
 - url: https://merchant-api.zsf918.com/v1
 tags:
@@ -73,12 +73,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /merchant/banks:
+  /merchant/bankCards:
     get:
       tags:
       - 财务
       summary: 获取银行卡列表
-      operationId: listMerchantBanks
+      operationId: listMerchantBankCards
       parameters:
       - name: page
         in: query
@@ -109,7 +109,7 @@ paths:
                   records:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Bank'
+                      $ref: '#/components/schemas/BankCard'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -122,17 +122,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /merchant/bank:
+  /merchant/bankCard:
     post:
       tags:
       - 财务
       summary: 创建银行卡
-      operationId: createMerchantBank
+      operationId: createMerchantBankCard
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -149,12 +149,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /merchant/bank/{bankId}:
+  /merchant/bankCard/{bankId}:
     post:
       tags:
       - 财务
       summary: 编辑银行卡
-      operationId: updateMerchantBank
+      operationId: updateMerchantBankCard
       parameters:
       - name: bankId
         in: path
@@ -166,7 +166,7 @@ paths:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -186,7 +186,7 @@ paths:
       tags:
       - 财务
       summary: 删除银行卡
-      operationId: deleteMerchantBank
+      operationId: deleteMerchantBankCard
       parameters:
       - name: bankId
         in: path
@@ -460,43 +460,51 @@ components:
       description: >
         支付通道:
          * `wechat` - 微信支付
-         * `paid` - 支付宝
+         * `alipay` - 支付宝
 
-    Bank:
+    BankCard:
       type: object
       properties:
         id:
           type: string
           description: 银行卡id
-        bankAccount:
-          type: string
-          description: 银行开户名
-        bankName: 
+        name: 
           type: string
           description: 银行名称
-        bankCard: 
+        account:
+          type: string
+          description: 银行开户名
+        cardNumber: 
           type: string
           description: 银行卡号
-        bankAddress: 
+        address: 
           type: string
           description: 银行地址
         state:
-          type: string
-          description: 银行卡状态
+          $ref: '#/components/schemas/BankCardState'
 
-    BankCreateOrUpdateReq:
+    BankCardState:
+      type: string
+      enum: [enable, disable, delete]
+      description: >
+        银行卡状态:
+         * `enable` - 启用
+         * `disable` - 禁用
+         * `delete` - 已删除
+
+    BankCardCreateOrUpdateReq:
       type: object
       properties:
         bankId: 
           type: string
           description: 银行Id
-        bankAccount:
+        account:
           type: string
           description: 银行开户名
-        bankCard: 
+        cardNumber: 
           type: string
           description: 银行卡号
-        bankAddress: 
+        address: 
           type: string
           description: 银行地址
 
@@ -506,18 +514,18 @@ components:
         id:
           type: string
           description: 提现ID
-        bankAccount:
-          type: string
-          description: 银行开户名
-        bankName: 
+        bankName:
           type: string
           description: 银行名称
-        bankCard: 
+        bankCardAccount:
+          type: string
+          description: 银行卡账户名
+        bankCardNumber:
           type: string
           description: 银行卡号
-        bankAddress: 
+        bankCardAddress:
           type: string
-          description: 银行地址
+          description: 银行卡支行地址
         amount:
           type: number
           description: 金额
@@ -528,8 +536,7 @@ components:
           type: number
           description: 实际到账金额
         state:
-          type: string
-          description: 提现状态
+          $ref: '#/components/schemas/WithdrawState'
         payCredit:
           type: string
           description: 支付凭证
@@ -548,10 +555,21 @@ components:
           type: string
           description: 审核备注
 
+    WithdrawState:
+      type: string
+      enum: [new, unpaid, underReview, complete, cancel]
+      description: >
+        提现状态:
+         * `new` - 新增
+         * `unpaid` - 未支付
+         * `underReview` - 等待审核
+         * `complete` - 已完成
+         * `cancel` - 已取消
+
     WithdrawCreateReq:
       type: object
       properties:
-        bankId:
+        bankCardId:
           type: string
           description: 银行卡ID
         amount:
@@ -616,12 +634,12 @@ components:
     
     TransactionType:
       type: string
-      enum: [orderSuccess, withdraw, withdrawFaild, systemAdd, systemSub]
+      enum: [orderSuccess, withdraw, withdrawFailed, systemAdd, systemSub]
       description: >
         订单状态:
          * `orderSuccess` - 下单成功(余额增加)
          * `withdraw` - 提现(余额减少)
-         * `withdrawFaild` - 提现失败(余额增加)
+         * `withdrawFailed` - 提现失败(余额增加)
          * `systemAdd` - 后台增加余额(余额增加)
          * `systemSub` - 后台减少余额(余额减少)
 

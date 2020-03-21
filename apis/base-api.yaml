@@ -3,43 +3,45 @@ info:
   title: 基础API
   version: 1.0.5
 servers:
-- url: https://base-api.zsf918.com/v1
+  - url: https://base-api.zsf918.com/v1
 tags:
-- name: 信息
-  description: 信息类API
-- name: 账户
-  description: 账户类API
+  - name: 信息
+    description: 信息类API
+  - name: 系统
+    description: 系统类API
+  - name: 账户
+    description: 账户类API
 paths:
   /base/banks:
     get:
       tags:
-      - 信息
+        - 信息
       summary: 获取银行列表
       operationId: listBanks
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: state
-        in: query
-        description: 银行状态
-        schema:
-          $ref: '#/components/schemas/BankState'
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: state
+          in: query
+          description: 银行状态
+          schema:
+            $ref: '#/components/schemas/BankState'
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -67,7 +69,7 @@ paths:
   /account/profile:
     get:
       tags:
-      - 账户
+        - 账户
       summary: 获取当前用户信息
       operationId: getProfile
       responses:
@@ -92,7 +94,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /account/password:
+  /account/password/update:
     post:
       tags:
         - 账户
@@ -119,7 +121,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /account/safepassword:
+  /account/safepassword/update:
     post:
       tags:
         - 账户
@@ -146,6 +148,113 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
+  /sys/login:
+    post:
+      tags:
+        - 系统
+      summary: 系统登陆
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResult'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /sys/google-code:
+    get:
+      tags:
+        - 系统
+      summary: 获取谷歌绑定的二维码
+      operationId: getOTP
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GoogleCodeResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+    post:
+      tags:
+        - 系统
+      summary: 绑定 Google Auth
+      operationId: bindOTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleBind'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /sys/google-reset:
+    post:
+      tags:
+        - 系统
+      summary: 重置谷歌绑定
+      operationId: resetOTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleReset'
+      responses:
+        200:
+          description: 成功
+          content: {}
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
 components:
   schemas:
     Bank:
@@ -154,10 +263,10 @@ components:
         id:
           type: string
           description: 银行id
-        name: 
+        name:
           type: string
           description: 银行名称
-        state: 
+        state:
           $ref: '#/components/schemas/BankState'
 
     BankState:
@@ -358,7 +467,7 @@ components:
          * `lock` - 锁定
          * `underReview` - 审核中
          * `reviewReject` - 拒绝
- 
+
     ValueWithType:
       type: object
       properties:
@@ -389,6 +498,70 @@ components:
           type: string
           description: 新密码的重复输入
 
+
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+        smsCode:
+          type: string
+          description: 短信验证码, 短信登陆
+        googleCode:
+          type: string
+          description: Google验证码, Google登陆
+        type:
+          $ref: '#/components/schemas/AccountType'
+        googleAuthenticator:
+          type: boolean
+          description: 是否采用谷歌登陆
+
+    AccountType:
+      type: string
+      enum: [supplier, server, business]
+      description: >
+        账户类型:
+          * `supplier` - 码商
+          * `server`  - 服务商
+          * `business` - 商户
+
+    LoginResult:
+      type: object
+      properties:
+        token:
+          type: string
+          description: 用户Token
+        expire:
+          type: number
+          description: Token过期时间
+
+    GoogleReset:
+      type: object
+      properties:
+        smsCode:
+          type: string
+          description: 短信验证码，重置绑定需要发送短信
+
+    GoogleBind:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Google 验证码
+  
+    GoogleCodeResponse:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: Google 验证码URI
+      example: 
+        uri: otpauth://totp/zsf918.com?secret=JqLBUWJQavcYgVmZJbjabj3RHAmeVUiV&issuer=admin.zsf918.com&algorithm=SHA512&digits=6&period=30
+
     ApiErrorResponse:
       type: object
       properties:
@@ -401,7 +574,7 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
-      
+
   securitySchemes:
     bearerAuth:
       type: http
