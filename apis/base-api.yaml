@@ -183,15 +183,39 @@ paths:
       tags:
         - 系统
       summary: 获取谷歌绑定的二维码
-      operationId: googleCode
+      operationId: getOTP
       responses:
         200:
           description: 成功
           content:
-            text/plain:
+            application/json:
               schema:
-                type: string
-                description: 谷歌绑定二维码链接
+                $ref: '#/components/schemas/GoogleCodeResponse'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+    post:
+      tags:
+        - 系统
+      summary: 绑定 Google Auth
+      operationId: bindOTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleBind'
+      responses:
+        200:
+          description: 成功
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -209,7 +233,7 @@ paths:
       tags:
         - 系统
       summary: 重置谷歌绑定
-      operationId: googleCode
+      operationId: resetOTP
       requestBody:
         content:
           application/json:
@@ -521,6 +545,22 @@ components:
         smsCode:
           type: string
           description: 短信验证码，重置绑定需要发送短信
+
+    GoogleBind:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Google 验证码
+
+    GoogleCodeResponse:
+      type: object
+      properties:
+        uri:
+          type: string
+          description: Google 验证码URI
+      example:
+        uri: otpauth://totp/zsf918.com?secret=JqLBUWJQavcYgVmZJbjabj3RHAmeVUiV&issuer=admin.zsf918.com&algorithm=SHA512&digits=6&period=30
 
     ApiErrorResponse:
       type: object
