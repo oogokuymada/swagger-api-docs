@@ -361,22 +361,37 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        supplierRechargeCommission:
+        commission:
           type: object
-          description: 码商充值佣金比例
+          description: 服务商接单佣金比例
           properties:
-            wechat:
-              $ref: '#/components/schemas/ValueWithType'
-            alipay:
-              $ref: '#/components/schemas/ValueWithType'
-        merchantWithdrawCommission:
-          type: object
-          description: 商户提现佣金比例
-          properties:
-            wechat:
-              $ref: '#/components/schemas/ValueWithType'
-            alipay:
-              $ref: '#/components/schemas/ValueWithType'
+            supplierRecharge:
+              type: object
+              description: 数值
+              properties:
+                type:
+                  $ref: '#/components/schemas/ValueType'
+                value:
+                  type: number
+                  description: 数值
+            supplierWithdraw:
+              type: object
+              description: 数值
+              properties:
+                type:
+                  $ref: '#/components/schemas/ValueType'
+                value:
+                  type: number
+                  description: 数值
+            businessWithdraw:
+              type: object
+              description: 数值
+              properties:
+                type:
+                  $ref: '#/components/schemas/ValueType'
+                value:
+                  type: number
+                  description: 数值
         withdrawFeeType:
           $ref: '#/components/schemas/ValueType'
         withdrawFee:
@@ -559,7 +574,7 @@ components:
         uri:
           type: string
           description: Google 验证码URI
-      example: 
+      example:
         uri: otpauth://totp/zsf918.com?secret=JqLBUWJQavcYgVmZJbjabj3RHAmeVUiV&issuer=admin.zsf918.com&algorithm=SHA512&digits=6&period=30
 
     ApiErrorResponse:
