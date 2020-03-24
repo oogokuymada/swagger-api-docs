@@ -422,6 +422,22 @@ components:
          * `lock` - 锁定
          * `underReview` - 审核中
          * `reviewReject` - 拒绝
+         
+    MerchantDocs:
+      type: object
+      properties:
+        key:
+          type: string
+          description: 商户KEY
+        iv:
+          type: string
+          description: 商户IV
+        endpoint:
+          type: string
+          description: API入口
+        downloadLink:
+          type: string
+          description: 文档下载地址
 
     Merchant:
       type: object
@@ -471,6 +487,8 @@ components:
           type: string
           format: date-time
           description: 创建日期（申请日期）
+        docs:
+          $ref: '#/components/schemas/MerchantDocs'
 
     MerchantState:
       type: string
