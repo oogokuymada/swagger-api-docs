@@ -1,0 +1,268 @@
+openapi: 3.0.1
+info:
+  title: Auth API
+  version: 1.0.0
+servers:
+- url: https://auth.zsf918.com/v1
+tags:
+- name: 认证
+  description: 认证类API
+paths:
+  /auth/captcha/image:
+    get:
+      tags:
+      - 认证
+      summary: 获取图片验证码Id
+      operationId: getCaptchaId
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetImageCaptchaIdResp'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  
+  /auth/captcha/image/{id}.png:
+    get:
+      tags:
+      - 认证
+      summary: 获取图片验证码内容
+      operationId: getCaptchaData
+      parameters:
+      - name: id
+        in: path
+        description: 图片验证码ID
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: 成功
+          content:
+            image/png:
+              schema: 
+               type: string
+               format: binary
+        404:
+          description: 图片验证码不存在
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /auth/captcha/sms:
+    post:
+      tags:
+      - 认证
+      summary: 获取短信验证码
+      operationId: sendSmsCaptcha
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/SendSMSCaptchaReq'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendSMSCaptchaResp'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /auth/login:
+    post:
+      tags:
+      - 认证
+      summary: 登陆
+      operationId: adminLogin
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/LoginReq'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResp'
+        403:
+          description: 已授权无权限
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginForbiddenResp'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /auth/challenge:
+    post:
+      tags:
+      - 认证
+      summary: 验证多因素认证信息
+      operationId: mfaChallenge
+      requestBody:
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/MFAChallengeReq'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginSuccessResp'
+        403:
+          description: 已授权无权限
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MFAChallengeForbiddenResp'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+components:
+  schemas:
+    GetImageCaptchaIdResp:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 图形验证码ID
+
+    LoginReq:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        password:
+          type: string
+          description: 密码
+        smsCaptchaId: 
+          type: string
+          description: 短信验证码ID
+        smsCaptchaSolution: 
+          type: string
+          description: 短信验证码解
+          
+    LoginSuccessResp:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: 访问Token
+        refreshToken:
+          type: string
+          description: 刷新Token
+        type: 
+          type: string
+          description: Token类(现在只有 bearer)
+          
+    LoginForbiddenResp:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: [invalidCertification, locked, mfaRequired]
+          description: >
+            错误类型:
+             * `invalidCertification` - 认证信息错误
+             * `locked` - 账户冻结
+             * `mfaRequired` - 需要mfa
+        mfaType: 
+          type: string
+          description: >
+            多因素认证类型
+            `error == mfaRequired` 时存在用于多因素认证
+        mfaToken: 
+          type: string
+          description: >
+            多因素认证Token
+            `error == mfaRequired` 时存在用于多因素认证
+
+    SendSMSCaptchaReq:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 用户名
+        captchaId: 
+          type: string
+          description: 人机验证码ID
+        captchaSolution: 
+          type: string
+          description: 人机验证码解
+
+    SendSMSCaptchaResp:
+      type: object
+      properties:
+        captchaId: 
+          type: string
+          description: 短信验证码ID
+          
+    MFAChallengeReq:
+      type: object
+      properties:
+        mfaToken: 
+          type: string
+          description: MFA Token
+        mfaSolution:
+          type: string
+          description: MFA 解
+
+    MFAChallengeForbiddenResp:
+      type: object
+      properties:
+        error:
+          type: string
+          enum: [invalidMFASolution]
+          description: >
+            错误类型:
+             * `invalidMFASolution` - MFA信息错误
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: text
+
+security:
+  - bearerAuth: []
