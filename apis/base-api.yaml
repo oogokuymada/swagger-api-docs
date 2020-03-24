@@ -361,37 +361,21 @@ components:
         agent:
           type: boolean
           description: 是否为代理
-        commission:
+        supplierRechargeCommission:
           type: object
-          description: 服务商接单佣金比例
-          properties:
-            supplierRecharge:
-              type: object
-              description: 数值
-              properties:
-                type:
-                  $ref: '#/components/schemas/ValueType'
-                value:
-                  type: number
-                  description: 数值
-            supplierWithdraw:
-              type: object
-              description: 数值
-              properties:
-                type:
-                  $ref: '#/components/schemas/ValueType'
-                value:
-                  type: number
-                  description: 数值
-            businessWithdraw:
-              type: object
-              description: 数值
-              properties:
-                type:
-                  $ref: '#/components/schemas/ValueType'
-                value:
-                  type: number
-                  description: 数值
+          description: 码商充值佣金费率
+          additionalProperties:
+            $ref: '#/components/schemas/ValueWithType'
+        supplierWithdrawCommission:
+          type: object
+          description: 码商提现佣金费率
+          additionalProperties:
+            $ref: '#/components/schemas/ValueWithType'
+        merchantWithdrawCommission:
+          type: object
+          description: 商户提现佣金费率
+          additionalProperties:
+            $ref: '#/components/schemas/ValueWithType'
         withdrawFeeType:
           $ref: '#/components/schemas/ValueType'
         withdrawFee:
@@ -411,6 +395,31 @@ components:
           type: string
           format: date-time
           description: 创建日期（申请日期）
+      example: 
+        id: '000000'
+        username: 'nongfu'
+        nickname: 'snake'
+        phone: '66668888'
+        state: 'enable'
+        agent: true
+        supplierRechargeCommission:
+          bank:
+            type: 'percent'
+            value: 0.11
+        supplierWithdrawCommission:
+          bank:
+            type: 'percent'
+            value: 0.12
+        merchantWithdrawCommission:
+          bank:
+            type: 'percent'
+            value: 0.13
+        withdrawFeeType: 'absolute'
+        withdrawFee: 10
+        amount: 10000
+        lockAmount: 1000
+        lastOnlineAt: '2020-03-23T13:23:19.891Z'
+        createAt: '2020-03-23T13:23:19.891Z'
 
     ProviderState:
       type: string
