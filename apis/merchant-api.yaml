@@ -247,6 +247,8 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Withdraw'
+                  summary:
+                    $ref: '#/components/schemas/WithdrawSummary'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -554,6 +556,19 @@ components:
         reviewNote:
           type: string
           description: 审核备注
+
+    WithdrawSummary:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: 金额
+        fee:
+          type: number
+          description: 手续费
+        actualAmount:
+          type: number
+          description: 实际到账金额
 
     WithdrawState:
       type: string
