@@ -21,20 +21,8 @@ paths:
       summary: 获取订单列表
       operationId: getMerchantOrdersList
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+      - $ref: '#/components/parameters/PageablePage'
+      - $ref: '#/components/parameters/PageableSize'
       - name: channelType
         in: query
         description: 通道类型
@@ -45,11 +33,7 @@ paths:
         description: 订单状态
         schema:
           $ref: '#/components/schemas/MerchantOrderState'
-      - name: merchantOrderId
-        in: query
-        description: 商户订单号
-        schema:
-          type: string
+      - $ref: '#/components/parameters/MerchantOrderId'
       responses:
         200:
           description: 成功
@@ -66,6 +50,41 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MerchantOrder'
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /merchant/order/logs:
+    get:
+      tags:
+        - 订单
+      summary: 获取下单日志列表
+      operationId: ListOrderLogs
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/MerchantOrderId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderedLog'
         500:
           description: 其他服务器异常
           content:
@@ -464,6 +483,58 @@ components:
          * `wechat` - 微信支付
          * `alipay` - 支付宝
 
+    OrderedStrategy:
+      type: string
+      enum: [unknown, grab, dispatch]
+      description: >
+        下单策略:
+          * `unknown` - 未知
+          * `grab` - 抢单
+          * `dispatch` - 派单
+    OrderedStatus:
+      type: string
+      enum: [exception, success]
+      description: >
+        下单状态:
+          * `exception` - 出现异常
+          * `success` - 下单成功
+    OrderedLog:
+      type: object
+      description: 下单日志
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 日志ID
+        orderSn:
+          type: string
+          description: 订单号
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 下单日志生成时间
+        cost:
+          type: number
+          description: 下单耗时
+        strategy:
+          $ref: '#/components/schemas/OrderedStrategy'
+        ip:
+          type: string
+          description: 商户传递的下单用户IP
+        status:
+          $ref: '#/components/schemas/OrderedStatus'
+        parameters:
+          type: string
+          description: 下单参数
+        errorCode:
+          type: number
+          description: >
+            异常码，当 *status* = `exception` 时存在
+        errorMessage:
+          type: string
+          description: >
+            异常消息，当 *status* = `exception` 时存在
+
     BankCard:
       type: object
       properties:
@@ -666,6 +737,44 @@ components:
           format: int32
         message:
           type: string
+
+  parameters:
+    MerchantOrderId:
+      name: merchantOrderId
+      in: query
+      description: 商户订单号
+      schema:
+        type: string
+    PageablePage:
+      name: page
+      in: query
+      description: 页数
+      required: false
+      schema:
+        type: number
+        default: 1
+    PageableSize:
+      name: size
+      in: query
+      description: 页大小
+      required: false
+      schema:
+        type: number
+        default: 10
+    QueryStart:
+      name: fromTime
+      in: query
+      description: 开始时间
+      schema:
+        type: string
+        format: 'date-time'
+    QueryEnd:
+      name: toTime
+      in: query
+      description: 结束时间
+      schema:
+        type: string
+        format: 'date-time'
 
   responses:
     UnauthorizedError:
