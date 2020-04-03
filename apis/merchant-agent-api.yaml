@@ -3,28 +3,28 @@ info:
   title: 商户代理API
   version: 1.1.0
 servers:
-- url: https://merchant-agent-api.zsf918.com/v1
+  - url: https://merchant-agent-api.zsf918.com/v1
 tags:
-- name: 人员
-  description: 人员类API
-- name: 财务
-  description: 财务类API
-- name: 统计
-  description: 统计类API
-- name: 团队
-  description: 团队类API
+  - name: 人员
+    description: 人员类API
+  - name: 财务
+    description: 财务类API
+  - name: 统计
+    description: 统计类API
+  - name: 团队
+    description: 团队类API
 paths:
   /agent/merchant/subordinate:
     post:
       tags:
-      - 人员
+        - 人员
       summary: 创建新下级商户
       operationId: createMerchant
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/MerchantCreateReq'
+              $ref: '#/components/schemas/MerchantCreateReq'
       responses:
         200:
           description: 成功
@@ -44,28 +44,28 @@ paths:
   /agent/merchant/subordinates:
     get:
       tags:
-      - 人员
+        - 人员
       summary: 获取下级列表
       operationId: listSubordinates
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -93,16 +93,16 @@ paths:
   /agent/merchant/subordinate/{merchantId}:
     get:
       tags:
-      - 人员
+        - 人员
       summary: 获取单个下级信息
       operationId: getSubordinateById
       parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -124,21 +124,21 @@ paths:
 
     post:
       tags:
-      - 人员
+        - 人员
       summary: 更新单个下级信息
       operationId: updateMerchantById
       parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/MerchantUpdateReq'
+              $ref: '#/components/schemas/MerchantUpdateReq'
       responses:
         200:
           description: 成功
@@ -158,28 +158,28 @@ paths:
   /agent/merchant/banks:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取银行卡列表
       operationId: listBanks
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -207,14 +207,14 @@ paths:
   /agent/merchant/bank:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 创建银行卡
       operationId: createBank
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+              $ref: '#/components/schemas/BankCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -234,21 +234,21 @@ paths:
   /agent/merchant/bank/{bankId}:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 编辑银行卡
       operationId: updateBank
       parameters:
-      - name: bankId
-        in: path
-        description: 银行卡ID
-        required: true
-        schema:
-          type: string
+        - name: bankId
+          in: path
+          description: 银行卡ID
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCreateOrUpdateReq'
+              $ref: '#/components/schemas/BankCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -266,16 +266,16 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
     delete:
       tags:
-      - 财务
+        - 财务
       summary: 删除银行卡
       operationId: deleteBank
       parameters:
-      - name: bankId
-        in: path
-        description: 银行卡ID
-        required: true
-        schema:
-          type: string
+        - name: bankId
+          in: path
+          description: 银行卡ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -295,28 +295,28 @@ paths:
   /agent/merchant/withdraws:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取提现申请列表
       operationId: listWithdraws
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -344,14 +344,14 @@ paths:
   /agent/merchant/withdraw:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 创建提现申请
       operationId: createWithdraw
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/WithdrawCreateReq'
+              $ref: '#/components/schemas/WithdrawCreateReq'
       responses:
         200:
           description: 成功
@@ -371,44 +371,44 @@ paths:
   /agent/merchant/transaction/{merchantId}:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取单个下级交易列表
       operationId: getSubordinateTransactionsById
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -440,38 +440,38 @@ paths:
   /agent/merchant/statistics/ordered:
     get:
       tags:
-      - 统计
+        - 统计
       summary: 获取下级订单统计列表
       operationId: getSubordinateOrderedStatistics
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         200:
           description: 成功
@@ -503,38 +503,38 @@ paths:
   /agent/merchant/statistics/withdraw:
     get:
       tags:
-      - 统计
+        - 统计
       summary: 获取下级提现统计列表
       operationId: getSubordinateWithdrawStatistics
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         200:
           description: 成功
@@ -566,44 +566,44 @@ paths:
   /agent/merchant/statistics/{merchantId}/ordered:
     get:
       tags:
-      - 统计
+        - 统计
       summary: 获取单个下级订单统计列表
       operationId: getSubordinateOrderedById
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -635,44 +635,44 @@ paths:
   /agent/merchant/statistics/{merchantId}/withdraw:
     get:
       tags:
-      - 统计
+        - 统计
       summary: 获取单个下级提现统计列表
       operationId: getSubordinateWithdrawById
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -703,25 +703,25 @@ paths:
 
   /agent/merchant/teams:
     get:
-      tags: 
-      - 团队
+      tags:
+        - 团队
       summary: 获取团队列表信息
       operationId: getMerchantTeams
-      parameters: 
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+      parameters:
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
       responses:
         200:
           description: 成功
@@ -752,17 +752,17 @@ paths:
 
   /agent/merchant/team/{merchantId}:
     get:
-      tags: 
-      - 团队
+      tags:
+        - 团队
       summary: 获取单个下级团队信息
       operationId: getMerchantTeamById
       parameters:
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - name: merchantId
+          in: path
+          description: 商户ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -792,13 +792,13 @@ components:
         bankAccount:
           type: string
           description: 银行开户名
-        bankName: 
+        bankName:
           type: string
           description: 银行名称
-        bankCard: 
+        bankCard:
           type: string
           description: 银行卡号
-        bankAddress: 
+        bankAddress:
           type: string
           description: 银行地址
         state:
@@ -808,16 +808,16 @@ components:
     BankCreateOrUpdateReq:
       type: object
       properties:
-        bankId: 
+        bankId:
           type: string
           description: 银行Id
         bankAccount:
           type: string
           description: 银行开户名
-        bankCard: 
+        bankCard:
           type: string
           description: 银行卡号
-        bankAddress: 
+        bankAddress:
           type: string
           description: 银行地址
 
@@ -987,7 +987,7 @@ components:
         value:
           type: number
           description: 数值
-          
+
     ValueType:
       type: string
       enum: [percent, absolute]
@@ -995,7 +995,7 @@ components:
         数值类型:
          * `percent` - 百分比
          * `absolute` - 绝对值
-          
+
     Transaction:
       type: object
       properties:
@@ -1025,7 +1025,7 @@ components:
           type: string
           format: date-time
           description: 创建日期
-    
+
     OrderedStatistics:
       type: object
       properties:
@@ -1034,7 +1034,7 @@ components:
           description: 商户ID
         channel:
           $ref: '#/components/schemas/OrderedStatisticsChannel'
-    
+
     WithdrawStatistics:
       type: object
       properties:
@@ -1053,7 +1053,7 @@ components:
           description: 统计日期
         channel:
           $ref: '#/components/schemas/OrderedStatisticsChannel'
-              
+
     WithdrawStatisticsDetail:
       type: object
       properties:
@@ -1063,7 +1063,7 @@ components:
           description: 统计日期
         channel:
           $ref: '#/components/schemas/WithdrawStatisticsChannel'
-    
+
     OrderedStatisticsChannel:
       type: object
       description: 通道统计
@@ -1181,7 +1181,7 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
-      
+
   securitySchemes:
     bearerAuth:
       type: http

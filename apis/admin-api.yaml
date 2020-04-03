@@ -3,187 +3,50 @@ info:
   title: Admin API
   version: 1.0.0
 servers:
-- url: https://admin-api.zsf918.com/v1
+  - url: https://admin-api.zsf918.com/v1
 tags:
-- name: 认证
-  description: 认证类API
-- name: 财务
-  description: 财务类API
+  - name: 管理员
+    description: 管理员账户API
+  - name: 订单
+    description: 订单API
+  - name: 商户
+    description: 商户API
+  - name: 码商
+    description: 码商API
+  - name: 服务商
+    description: 服务商API
+  - name: 财务
+    description: 财务API
+  - name: 商户代理
+    description: 商户代理API
+  - name: 码商代理
+    description: 码商代理API
 paths:
-  /auth/captcha/image:
+  /admin/accounts:
     get:
+      summary: 获取管理员列表
+      operationId: ListAccounts
       tags:
-      - 认证
-      summary: P
-      operationId: getCaptchaId
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetImageCaptchaIdResp'
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-  
-  /auth/captcha/image/{id}.png:
-    get:
-      tags:
-      - 认证
-      summary: 获取图片验证码内容
-      operationId: getCaptchaData
+        - 管理员
       parameters:
-      - name: id
-        in: path
-        description: 图片验证码ID
-        required: true
-        schema:
-          type: string
-      responses:
-        200:
-          description: 成功
-          content:
-            image/png:
-              schema: 
-               type: string
-               format: binary
-        404:
-          description: 图片验证码不存在
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
-  /auth/captcha/sms:
-    post:
-      tags:
-      - 认证
-      summary: 获取短信验证码
-      operationId: sendSmsCaptcha
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: '#/components/schemas/SendSMSCaptchaReq'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
       responses:
         200:
           description: 成功
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SendSMSCaptchaResp'
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
-  /auth/login:
-    post:
-      tags:
-      - 认证
-      summary: 登陆
-      operationId: adminLogin
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: '#/components/schemas/LoginReq'
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginSuccessResp'
-        403:
-          description: 已授权无权限
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginForbiddenResp'
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
-  /auth/challenge:
-    post:
-      tags:
-      - 认证
-      summary: 验证多因素认证信息
-      operationId: mfaChallenge
-      requestBody:
-        content:
-          application/json:
-            schema:
-                $ref: '#/components/schemas/MFAChallengeReq'
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginSuccessResp'
-        403:
-          description: 已授权无权限
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MFAChallengeForbiddenResp'
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
-  /admin/merchant/orders:
-    get:
-      tags:
-      - 财务
-      summary: 获取商户订单列表
-      operationId: listMerchantOrders
-      parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      responses:
-        200:
-          description: 成功
-          content:  
-            application/json:
-              schema:
-                type: object
                 properties:
                   total:
-                    type: integer
+                    type: number
                     format: int64
                     description: 总数
                   records:
                     type: array
+                    description: 记录
                     items:
-                      $ref: '#/components/schemas/MerchantOrder'
+                      $ref: '#/components/schemas/Account'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -195,44 +58,621 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-
+  /admin/account:
+    post:
+      summary: 创建管理员
+      operationId: CreateAccount
+      tags:
+        - 管理员
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAccount'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/account/{id}:
+    get:
+      summary: 获取管理员
+      operationId: GetAccount
+      tags:
+        - 管理员
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新管理员
+      operationId: UpdateAccount
+      tags:
+        - 管理员
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAccount'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除管理员
+      operationId: DeleteAccount
+      tags:
+        - 管理员
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/orders:
+    get:
+      summary: 获取订单列表
+      operationId: ListOrders
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/CollectorId'
+        - $ref: '#/components/parameters/CollectorUsername'
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/PayFormat'
+        - $ref: '#/components/parameters/PayState'
+        - $ref: '#/components/parameters/PayType'
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/OrderSn'
+        - $ref: '#/components/parameters/MerchantOrderId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/{id}:
+    get:
+      summary: 获取订单详情
+      operationId: GetOrder
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新订单
+      operationId: UpdateOrder
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrder'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/notifies:
+    get:
+      summary: 获取订单通知列表
+      operationId: GetNotifies
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/OrderSn'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - name: state
+          in: query
+          description: 通知状态
+          schema:
+            $ref: '#/components/schemas/NotifyState'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notify'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/notify/{id}:
+    get:
+      summary: 获取订单通知详情
+      operationId: GetNotify
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotifyDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    post:
+      summary: 发送订单通知
+      operationId: SendNotify
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/ip/rates:
+    get:
+      summary: 获取IP成功率列表
+      operationId: GetIpRates
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/MerchantId'
+        - name: ip
+          in: query
+          description: IP
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: IP状态
+          schema:
+            $ref: '#/components/schemas/IpState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IpRate'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/ip/blacklist:
+    get:
+      summary: 获取IP黑名单
+      operationId: GetIpBlacklist
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/MerchantId'
+        - name: ip
+          in: query
+          description: IP
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: 记录状态
+          schema:
+            $ref: '#/components/schemas/RecordState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IpBlacklist'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    post:
+      summary: 添加IP黑名单
+      operationId: createIpBlacklist
+      tags:
+        - 订单
+      requestBody:
+        $ref: '#/components/requestBodies/CreateIpBlacklist'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchants:
+    get:
+      summary: 获取商户列表
+      operationId: ListMerchants
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/Nickname'
+        - $ref: '#/components/parameters/Remark'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/UserListState'
+        - $ref: '#/components/parameters/Agent'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/Merchant'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant:
+    post:
+      summary: 创建商户
+      operationId: CreateMerchant
+      tags:
+        - 商户
+      requestBody:
+        $ref: '#/components/requestBodies/CreateMerchant'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/{id}:
+    get:
+      summary: 获取商户
+      operationId: GetMerchant
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新商户
+      operationId: UpdateMerchant
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateMerchant'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/reviews:
+    get:
+      summary: 获取商户审核列表
+      operationId: ListMerchantReviews
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Nickname'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/UserReviewState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/MerchantReview'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/review/{id}:
+    get:
+      summary: 获取商户审核
+      operationId: GetMerchantReview
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantReviewDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新商户审核
+      operationId: UpdateMerchantReview
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateMerchantReview'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/merchant/withdraws:
     get:
-      tags:
-      - 财务
       summary: 获取商户提现列表
-      operationId: listWithdraws
+      operationId: ListMerchantWithdraws
+      tags:
+        - 商户
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
-                type: object
                 properties:
                   total:
-                    type: integer
+                    type: number
                     format: int64
                     description: 总数
                   records:
                     type: array
+                    description: 记录
                     items:
-                      $ref: '#/components/schemas/Withdraw'
+                      $ref: '#/components/schemas/MerchantWithdrawOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -244,58 +684,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-
-  /agent/merchant/statistics/ordered:
+  /admin/merchant/withdraw/{id}:
     get:
+      summary: 获取商户提现单
+      operationId: GetMerchantWithdraw
       tags:
-      - 统计
-      summary: 获取下级订单统计列表
-      operationId: getSubordinateOrderedStatistics
+        - 商户
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - $ref: '#/components/parameters/Id'
       responses:
         200:
           description: 成功
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                    description: 总数
-                  records:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/OrderedStatistics'
+                $ref: '#/components/schemas/MerchantWithdrawOrderDetail'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -307,58 +710,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-
-  /agent/merchant/statistics/withdraw:
-    get:
+    put:
+      summary: 更新商户提现单
+      operationId: UpdateMerchantWithdraw
       tags:
-      - 统计
-      summary: 获取下级提现统计列表
-      operationId: getSubordinateWithdrawStatistics
+        - 商户
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
       responses:
         200:
           description: 成功
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  total:
-                    type: integer
-                    format: int64
-                    description: 总数
-                  records:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/WithdrawStatistics'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -370,64 +733,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-
-  /agent/merchant/statistics/{merchantId}/ordered:
+  /admin/merchant/bankCards:
     get:
+      summary: 获取商户银行卡列表
+      operationId: ListMerchantBankCards
       tags:
-      - 统计
-      summary: 获取单个下级订单统计列表
-      operationId: getSubordinateOrderedById
+        - 商户
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/BankAccount'
+        - $ref: '#/components/parameters/RecordState'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
       responses:
         200:
           description: 成功
           content:
             application/json:
               schema:
-                type: object
                 properties:
                   total:
-                    type: integer
+                    type: number
                     format: int64
                     description: 总数
                   records:
                     type: array
+                    description: 记录
                     items:
-                      $ref: '#/components/schemas/OrderedStatisticsDetail'
+                      $ref: '#/components/schemas/BankCard'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -439,64 +772,166 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-
-  /agent/merchant/statistics/{merchantId}/withdraw:
-    get:
+  /admin/merchant/bankCard:
+    post:
+      summary: 创建商户银行卡
+      operationId: CreateMerchantBankCard
       tags:
-      - 统计
-      summary: 获取单个下级提现统计列表
-      operationId: getSubordinateWithdrawById
+        - 商户
+      requestBody:
+        $ref: '#/components/requestBodies/CreateBankCard'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/bankCard/{id}:
+    get:
+      summary: 获取商户银行卡
+      operationId: GetMerchantBankCard
+      tags:
+        - 商户
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: merchantId
-        in: path
-        description: 商户ID
-        required: true
-        schema:
-          type: string
+        - $ref: '#/components/parameters/Id'
       responses:
         200:
           description: 成功
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/BankCard'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新商户银行卡
+      operationId: UpdateMerchantBankCard
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateBankCard'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除商户银行卡
+      operationId: DeleteMerchantBankCard
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/moneyLogs:
+    get:
+      summary: 获取资金日志列表
+      operationId: ListMerchantMoneyLogs
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/MerchantMoneyLogType'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
                 properties:
                   total:
-                    type: integer
+                    type: number
                     format: int64
                     description: 总数
                   records:
                     type: array
+                    description: 记录
                     items:
-                      $ref: '#/components/schemas/OrderedStatisticsDetail'
+                      $ref: '#/components/schemas/MerchantMoneyLog'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/statistics:
+    get:
+      summary: 获取商户统计列表
+      operationId: ListMerchantStatistics
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/StatisticOrderUserDateChannel'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -511,467 +946,1032 @@ paths:
 
 components:
   schemas:
-    GetImageCaptchaIdResp:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 图形验证码ID
-
-    LoginReq:
-      type: object
-      properties:
-        username:
-          type: string
-          description: 用户名
-        password:
-          type: string
-          description: 密码
-        smsCaptchaId: 
-          type: string
-          description: 短信验证码ID
-        smsCaptchaSolution: 
-          type: string
-          description: 短信验证码解
-          
-    LoginSuccessResp:
-      type: object
-      properties:
-        accessToken:
-          type: string
-          description: 访问Token
-        refreshToken:
-          type: string
-          description: 刷新Token
-        type: 
-          type: string
-          description: Token类(现在只有 bearer)
-          
-    LoginForbiddenResp:
-      type: object
-      properties:
-        error:
-          type: string
-          enum: [invalidCertification, locked, mfaRequired]
-          description: >
-            错误类型:
-             * `invalidCertification` - 认证信息错误
-             * `locked` - 账户冻结
-             * `mfaRequired` - 需要mfa
-        mfaType: 
-          type: string
-          description: >
-            多因素认证类型
-            `error == mfaRequired` 时存在用于多因素认证
-        mfaToken: 
-          type: string
-          description: >
-            多因素认证Token
-            `error == mfaRequired` 时存在用于多因素认证
-
-    SendSMSCaptchaReq:
-      type: object
-      properties:
-        username:
-          type: string
-          description: 用户名
-        captchaId: 
-          type: string
-          description: 人机验证码ID
-        captchaSolution: 
-          type: string
-          description: 人机验证码解
-
-    SendSMSCaptchaResp:
-      type: object
-      properties:
-        captchaId: 
-          type: string
-          description: 短信验证码ID
-          
-    MFAChallengeReq:
-      type: object
-      properties:
-        mfaToken: 
-          type: string
-          description: MFA Token
-        mfaSolution:
-          type: string
-          description: MFA 解
-
-    MFAChallengeForbiddenResp:
-      type: object
-      properties:
-        error:
-          type: string
-          enum: [invalidMFASolution]
-          description: >
-            错误类型:
-             * `invalidMFASolution` - MFA信息错误
-
-    MerchantOrder:
-      type: object
-      properties:
-        bankId: 
-          type: string
-          description: 银行Id
-        bankAccount:
-          type: string
-          description: 银行开户名
-        bankCard: 
-          type: string
-          description: 银行卡号
-        bankAddress: 
-          type: string
-          description: 银行地址
-
-    Withdraw:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 提现ID
-        bankId:
-          type: string
-          description: 银行卡ID
-        amount:
-          type: number
-          description: 金额
-        fee:
-          type: number
-          description: 手续费
-        actualAmount:
-          type: number
-          description: 实际到账金额
-        state:
-          type: string
-          description: 提现状态
-        payCredit:
-          type: string
-          description: 支付凭证
-        payAt:
-          type: string
-          format: date-time
-          description: 支付日期
-        createAt:
-          type: string
-          format: date-time
-          description: 创建日期（申请日期）
-        note:
-          type: string
-          description: 提现备注
-        reviewNote:
-          type: string
-          description: 审核备注
-
-    WithdrawCreateReq:
-      type: object
-      properties:
-        bankId:
-          type: string
-          description: 银行卡ID
-        amount:
-          type: number
-          description: 金额
-        secretPassword:
-          type: string
-          description: 安全密码
-        note:
-          type: string
-          description: 提现备注
-
-    MerchantCreateReq:
-      type: object
-      properties:
-        username:
-          type: string
-          description: 用户名
-        password:
-          type: string
-          description: 密码
-        nickname:
-          type: string
-          description: 昵称（联系用名）
-        phone:
-          type: string
-          format: phone-number
-          description: 手机号
-        agent:
-          type: boolean
-          description: 是否为代理
-        commission:
-          type: object
-          description: 佣金比例
-          properties:
-            wechat:
-              type: number
-              description: 数值
-            alipay:
-              type: number
-              description: 数值
-
-    MerchantUpdateReq:
-      type: object
-      properties:
-        nickname:
-          type: string
-          description: 昵称（联系用名）
-        commission:
-          type: object
-          description: 佣金比例
-          properties:
-            wechat:
-              type: number
-              description: 数值
-            alipay:
-              type: number
-              description: 数值
-
-    Merchant:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 商户ID
-        username:
-          type: string
-          description: 用户名
-        nickname:
-          type: string
-          description: 昵称（联系用名）
-        phone:
-          type: string
-          format: phone-number
-          description: 手机号
-        state:
-          $ref: '#/components/schemas/MerchantState'
-        agent:
-          type: boolean
-          description: 是否为代理
-        commission:
-          type: object
-          description: 佣金比例
-          properties:
-            wechat:
-              $ref: '#/components/schemas/ValueWithType'
-            alipay:
-              $ref: '#/components/schemas/ValueWithType'
-        withdrawFeeType:
-          $ref: '#/components/schemas/ValueType'
-        withdrawFee:
-          type: number
-          description: 提现手续费
-        amount:
-          type: number
-          description: 当前账户金额
-        lockAmount:
-          type: number
-          description: 当前账户锁定金额
-        createAt:
-          type: string
-          format: date-time
-          description: 创建日期（申请日期）
-
-    MerchantState:
+    AdminState:
       type: string
-      enum: [ban, enable, lock, underReview, reviewReject]
+      enum: [ban, enable]
       description: >
-        商户状态:
-         * `ban` - 封禁
-         * `enable` - 启用
-         * `lock` - 锁定
-         * `underReview` - 审核中
-         * `reviewReject` - 拒绝
-
-    ValueWithType:
+        管理员状态:
+          * `ban` - 禁用
+          * `enable` - 启用
+    UserState:
+      type: string
+      enum: [ban, enable, lock]
+      description: >
+        用户状态:
+          * `ban` - 禁用
+          * `enable` - 启用
+          * `lock`  - 锁定
+    ReviewState:
+      type: string
+      enum: [underReview, reviewReject]
+      description: >
+        审核状态:
+          * `underReview` - 审核中
+          * `reviewReject` - 审核拒绝
+    UpdateReviewState:
+      type: string
+      enum: [enable, reviewReject]
+      description: >
+        审核状态:
+          * `enable` - 审核通过
+          * `reviewReject` - 审核拒绝
+    PayFormat:
+      type: string
+      enum: [normal, manual]
+      description: >
+        商户单类型:
+          * `normal` - 正常订单
+          * `manual` - 手工补单
+    PayState:
+      type: string
+      enum: [unpaid, paid, cancel]
+      description: >
+        商户单支付状态:
+          * `unpaid` - 未支付
+          * `paid` - 已支付
+          * `cancel`  - 已取消
+    PayType:
+      type: string
+      enum: [wechat, alipay]
+      description: >
+        商户单支付类型:
+          * `wechat` - 微信
+          * `alipay` - 支付宝
+    NotifyState:
+      type: string
+      enum: [running, success, fail]
+      description: >
+        通知状态:
+          * `running` - 正在通知
+          * `success` - 通知成功
+          * `fail`  - 超出尝试通知的次数，通知失败
+    EncryptType:
+      type: string
+      enum: [aes, md5]
+      description: >
+        数据加密类型:
+          * `aes` - AES
+          * `md5` - MD5
+    IpState:
+      type: string
+      enum: [normal, banMerchant, banGlobal]
+      description: >
+        IP禁用状态:
+          * `normal` - 正常使用
+          * `banMerchant` - 商户禁用
+          * `banGlobal` - 全局禁用
+    OrderState:
+      type: string
+      enum: [new, unpaid, underReview, complete, cancel]
+      description: >
+        订单状态:
+          * `new` - 新增
+          * `unpaid` - 未支付
+          * `underReview`  - 审核中
+          * `complete` - 已完成
+          * `cancel` - 已取消
+    UpdateOrderState:
+      type: string
+      enum: [complete, cancel]
+      description: >
+        审核订单状态:
+          * `complete` - 完成订单
+          * `cancel` - 拒绝订单
+    RecordState:
+      type: string
+      enum: [disable, enable, delete]
+      description: >
+        数据状态:
+          * `disable` - 禁用
+          * `enable` - 启用
+          * `delete`  - 删除
+    RateType:
+      type: string
+      enum: [percent, absolute]
+      default: percent
+      description: >
+        费率计算类型:
+          * `percent` - 百分比
+          * `absolute` - 绝对值
+    ChannelType:
+      type: string
+      enum: [wechat, alipay, bank]
+      description: >
+        通道类型:
+          * `wechat` - 微信
+          * `alipay` - 支付宝
+          * `bank` - 银行
+    ChannelRate:
       type: object
+      description: 通道费率以及计算类型
       properties:
         type:
-          $ref: '#/components/schemas/ValueType'
+          $ref: '#/components/schemas/RateType'
         value:
           type: number
           description: 数值
-          
-    ValueType:
-      type: string
-      enum: [percent, absolute]
-      description: >
-        数值类型:
-         * `percent` - 百分比
-         * `absolute` - 绝对值
-          
-    Transaction:
+    Channel:
       type: object
+      description: 通道信息
+      properties:
+        wechat:
+          $ref: '#/components/schemas/ChannelRate'
+        alipay:
+          $ref: '#/components/schemas/ChannelRate'
+        bank:
+          $ref: '#/components/schemas/ChannelRate'
+    Account:
+      type: object
+      description: 管理员信息
       properties:
         id:
-          type: string
-          description: 交易ID
-        merchantId:
-          type: string
-          description: 商户ID
-        amount:
           type: number
-          description: 交易金额
-        type:
-          type: string
-          enum: [ordered, rebate]
-          description: >
-            交易类型:
-             * `ordered` - 商户下单
-             * `orderedRebate` - 下单返佣
-        orderId:
-          type: string
-          description: 关联订单号
-        orderState:
-          type: string
-          description: 关联订单状态
-        createAt:
-          type: string
-          format: date-time
-          description: 创建日期
-    
-    OrderedStatistics:
-      type: object
-      properties:
-        merchantId:
-          type: string
-          description: 商户ID
-        channel:
-          $ref: '#/components/schemas/OrderedStatisticsChannel'
-    
-    WithdrawStatistics:
-      type: object
-      properties:
-        merchantId:
-          type: string
-          description: 商户ID
-        channel:
-          $ref: '#/components/schemas/WithdrawStatisticsChannel'
-
-    OrderedStatisticsDetail:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: 统计日期
-        channel:
-          $ref: '#/components/schemas/OrderedStatisticsChannel'
-              
-    WithdrawStatisticsDetail:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: 统计日期
-        channel:
-          $ref: '#/components/schemas/WithdrawStatisticsChannel'
-    
-    OrderedStatisticsChannel:
-      type: object
-      description: 通道统计
-      additionalProperties:
-        type: object
-        properties:
-          totalOrders:
-            type: integer
-            format: int64
-            description: 总订单数
-          successOrders:
-            type: integer
-            format: int64
-            description: 总成功订单数
-          totalOrdersAmount:
-            type: number
-            description: 总订单金额
-          totalSuccessOrdersAmount:
-            type: number
-            description: 总成功订单金额
-          totalRebateAmount:
-            type: number
-            description: 总返佣金额
-      example:
-        alipay:
-          totalOrders: 100
-          successOrders: 80
-          totalOrdersAmount: 10000
-          totalSuccessOrdersAmount: 8000
-          totalRebateAmount: 100
-        wechat:
-          totalOrders: 100
-          successOrders: 100
-          totalOrdersAmount: 10000
-          totalSuccessOrdersAmount: 8000
-          totalRebateAmount: 100
-
-    WithdrawStatisticsChannel:
-      type: object
-      description: 通道统计
-      additionalProperties:
-        type: object
-        properties:
-          totalOrders:
-            type: integer
-            format: int64
-            description: 总订单数
-          successOrders:
-            type: integer
-            format: int64
-            description: 总成功订单数
-          totalOrdersAmount:
-            type: number
-            description: 总订单金额
-          totalSuccessOrdersAmount:
-            type: number
-            description: 总成功订单金额
-      example:
-        alipay:
-          totalOrders: 100
-          successOrders: 80
-          totalOrdersAmount: 10000
-          totalSuccessOrdersAmount: 8000
-        wechat:
-          totalOrders: 100
-          successOrders: 100
-          totalOrdersAmount: 10000
-          totalSuccessOrdersAmount: 8000
-
-    Team:
-      type: object
-      properties:
-        id:
-          type: string
-          description: 商户ID
+          format: int64
+          description: ID
         username:
           type: string
-          description: 用户名
+          description: 登录名
         nickname:
           type: string
-          description: 昵称（联系用名）
+          description: 昵称
         phone:
           type: string
-          format: phone-number
-          description: 手机号
+          description: 手机号码
+        state:
+          $ref: '#/components/schemas/AdminState'
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 创建时间
+        loginAt:
+          type: string
+          format: 'date-time'
+          description: 登陆时间
+        loginIp:
+          type: string
+          description: 登陆IP
+        isBindOTP:
+          type: boolean
+          description: 是否绑定谷歌验证
+    Order:
+      type: object
+      description: 商户单信息
+      properties:
+        id:
+          type: string
+          description: 订单ID
+        orderSn:
+          type: string
+          description: 订单号
+        type:
+          $ref: '#/components/schemas/PayFormat'
+        state:
+          $ref: '#/components/schemas/PayState'
+        collectorId:
+          type: number
+          format: int64
+          description: 码商ID
+        collectorUsername:
+          type: string
+          description: 码商账户名
+        collectorRate:
+          type: number
+          description: 码商接单时的费率
+        collectorCommission:
+          type: number
+          format: double
+          description: 码商完成该订单能获得的佣金
+        channelName:
+          type: string
+          description: 通道名称
+        channelType:
+          $ref: '#/components/schemas/PayType'
+        channelImage:
+          type: string
+          description: 通道的二维码
+        merchantId:
+          type: number
+          format: int64
+          description: 商户ID
+        merchantNickname:
+          type: string
+          description: 商户昵称
+        merchantRate:
+          type: number
+          description: 商户手续费率
+        merchantFee:
+          type: number
+          format: double
+          description: 商户完成该订单需要支付的手续费
+        merchantOrderSn:
+          type: string
+          description: 商户单号
+        amount:
+          type: number
+          format: double
+          description: 下单金额
+        actualAmount:
+          type: number
+          format: double
+          description: 实付金额
+        income:
+          type: number
+          format: double
+          description: 平台收入
+        merchantIncome:
+          type: number
+          format: double
+          description: 商户收入
+        superiorCollectorRebate:
+          type: number
+          format: double
+          description: 上级码商分佣
+        superiorMerchantRebate:
+          type: number
+          format: double
+          description: 上级商户分佣
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 下单时间
+        bindAt:
+          type: string
+          format: 'date-time'
+          description: 码商接单时间
+        payAt:
+          type: string
+          format: 'date-time'
+          description: 支付时间
+        ip:
+          type: string
+          description: 下单时商户提供的用户IP
+        country:
+          type: string
+          description: IP匹配的国家
+        province:
+          type: string
+          description: IP匹配的省份
+        city:
+          type: string
+          description: IP匹配的城市
+    NotifyLog:
+      type: object
+      description: 订单通知的日志
+      properties:
+        id:
+          type: number
+          description: 日志ID
+        code:
+          type: integer
+          description: 通知HTTP状态码
+        message:
+          type: string
+          description: HTTP错误信息
+        response:
+          type: string
+          description: 通知的响应结果
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 通知时间
+    Notify:
+      type: object
+      description: 订单通知信息
+      properties:
+        id:
+          type: number
+          description: 通知ID
+        orderSn:
+          type: string
+          description: 订单号
+        payAt:
+          type: string
+          format: 'date-time'
+        count:
+          type: integer
+          description: 通知次数
+        state:
+          $ref: '#/components/schemas/NotifyState'
+        type:
+          $ref: '#/components/schemas/EncryptType'
+    NotifyDetail:
+      allOf:
+        - $ref: '#/components/schemas/Notify'
+        - type: object
+          description: 订单通知详情信息
+          properties:
+            merchantOrderSn:
+              type: string
+              description: 商户订单号
+            amount:
+              type: number
+              format: double
+              description: 下单金额
+            actualAmount:
+              type: number
+              format: double
+              description: 实付金额
+            createAt:
+              type: string
+              format: 'date-time'
+              description: 下单时间
+            logs:
+              type: array
+              description: 通知发送日志
+              items:
+                $ref: '#/components/schemas/NotifyLog'
+    IpRate:
+      type: object
+      description: IP成功率信息
+      properties:
+        ip:
+          type: string
+          description: IP
+        merchantId:
+          type: number
+          format: int64
+          description: 商户ID
+        totalCount:
+          type: number
+          format: int64
+          description: 订单总数
+        successCount:
+          type: number
+          format: int64
+          description: 成功总数
+        failCount:
+          type: number
+          format: int64
+          description: 失败总数
+        successRate:
+          type: number
+          format: double
+          description: 成功率
+        state:
+          $ref: '#/components/schemas/IpState'
+    IpBlacklist:
+      type: object
+      description: IP黑名单信息
+      properties:
+        id:
+          type: number
+          format: int64
+          description: ID
+        merchantId:
+          type: number
+          format: int64
+          description: 商户ID，当值为-1时为全局禁用
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 黑名单添加时间
+        state:
+          $ref: '#/components/schemas/RecordState'
+        ip:
+          type: string
+          description: IP
+
+    MoneyLogCommonType:
+      type: string
+      enum: [
+        amountOrderAdd, amountSystemAdd, amountSystemSub, withdraw,
+        rebate, lockAmountAdd, lockAmountSub
+      ]
+      description: >
+        资金日志类型:
+          * `amountOrderAdd` - 订单增加余额
+          * `amountSystemAdd` - 后台增加余额
+          * `amountSystemSub` - 后台减少余额
+          * `withdraw` - 提现
+          * `rebate` - 分佣
+          * `lockAmountAdd` - 增加冻结金额
+          * `lockAmountSub` - 释放冻结金额
+    MerchantMoneyLogType:
+      allOf:
+        - $ref: '#/components/schemas/MoneyLogCommonType'
+        - type: string
+          enum: [amountOrderSub, withdrawFailed]
+          description: >
+            商户资金日志类型:
+              * `amountOrderAdd` - 订单增加余额
+              * `amountOrderSub` - 订单减少余额
+              * `amountSystemAdd` - 后台增加余额
+              * `amountSystemSub` - 后台减少余额
+              * `withdraw` - 提现(余额减少)
+              * `withdrawFailed` - 提现失败(余额增加)
+              * `rebate` - 分佣
+              * `lockAmountAdd` - 增加冻结金额
+              * `lockAmountSub` - 释放冻结金额
+    CollectorMoneyLogType:
+      allOf:
+        - $ref: '#/components/schemas/MoneyLogCommonType'
+        - type: string
+          enum: [
+            recharge, amountToBalance, balanceToAmount,
+            balance, balanceSystemAdd, balanceSystemSub
+          ]
+          description: >
+            (码商|服务商)资金日志类型:
+              * `amountOrderAdd` - 订单增加余额
+              * `recharge` - 充值
+              * `amountToBalance` - 余额转跑分
+              * `balanceToAmount` - 跑分转余额
+              * `balance` - 跑分
+              * `amountSystemAdd` - 后台增加余额
+              * `amountSystemSub` - 后台减少余额
+              * `balanceSystemAdd` - 后台增加跑分
+              * `balanceSystemSub` - 后台减少跑分
+              * `withdraw` - 提现
+              * `withdrawFailed` - 提现失败
+              * `rebate` - 分佣
+              * `lockAmountAdd` - 增加冻结金额
+              * `lockAmountSub` - 释放冻结金额
+    OrderType:
+      type: string
+      enum: [none, ordered, recharge, withdraw]
+      description: >
+        订单类型:
+          * `none` - 无
+          * `order` - 订单: *下单* 和 *接单*
+          * `recharge` - 充值
+          * `withdraw` - 提现
+    MoneyLogCommon:
+      type: object
+      description: 资金日志
+      properties:
+        id:
+          type: number
+          description: 日志ID
+        userId:
+          type: number
+          description: 用户ID
+        amount:
+          type: number
+          description: 日志涉及金额
+        afterAmount:
+          type: number
+          description: 操作后金额
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 日志生成时间
+        note:
+          type: string
+          description: 日志描述
+        orderId:
+          type: number
+          description: 关联的订单ID
+        orderType:
+          $ref: '#/components/schemas/OrderType'
+    MerchantMoneyLog:
+      description: 商户资金日志
+      allOf:
+        - $ref: '#/components/schemas/MoneyLogCommon'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/MerchantMoneyLogType'
+    CollectorMoneyLog:
+      description: 码商|服务商资金日志
+      allOf:
+        - $ref: '#/components/schemas/MoneyLogCommon'
+        - type: object
+          properties:
+            type:
+              $ref: '#/components/schemas/CollectorMoneyLogType'
+
+
+    CuAccount:
+      type: object
+      properties:
+        username:
+          type: string
+          description: 登录名
+        nickname:
+          type: string
+          description: 昵称
+        password:
+          type: string
+          format: password
+          description: 登陆密码
+        phone:
+          type: string
+          description: 手机号码
+        state:
+          $ref: '#/components/schemas/AdminState'
+
+    UserCommon:
+      type: object
+      description: 用户通用字段
+      properties:
+        parentId:
+          type: number
+          format: int64
+          description: 上级ID
+        id:
+          type: number
+          format: int64
+          description: 用户ID
         agent:
           type: boolean
-          description: 是否为代理
-        subordinateAgentCount:
-          type: integer
-          format: int64
-          description: 直属下级商户代理数量
-        subordinateNormalCount:
-          type: integer
-          format: int64
-          description: 直属下级商户数量
+          description: 是否是代理
+        nickname:
+          type: string
+          description: 昵称
+        remark:
+          type: string
+          description: 后台备注
+        phone:
+          type: string
+          description: 手机号
+        amount:
+          type: number
+          description: 余额
+        lockAmount:
+          type: number
+          description: 锁定金额
+        withdrawAmount:
+          type: number
+          description: 提现总金额
+        rebateAmount:
+          type: number
+          description: 返佣总金额
+        state:
+          $ref: '#/components/schemas/UserState'
+        withdrawFeeType:
+          $ref: '#/components/schemas/RateType'
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        createAt:
+          type: string
+          description: 用户创建时间
+        isBindOTP:
+          type: boolean
+          description: 是否绑定谷歌验证
+    Merchant:
+      allOf:
+        - $ref: '#/components/schemas/UserCommon'
+        - type: object
+          description: 商户信息
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            minPay:
+              type: number
+              description: 最小下单金额
+            maxPay:
+              type: number
+              description: 最大下单金额
+            minWithdraw:
+              type: number
+              description: 最小提现金额
+            maxWithdraw:
+              type: number
+              description: 最大提现金额
+    MerchantDetail:
+      allOf:
+        - $ref: '#/components/schemas/Merchant'
+        - type: object
+          description: 商户详情
+          properties:
+            parentNickname:
+              type: string
+              description: 上级昵称
+            parentChannel:
+              $ref: '#/components/schemas/Channel'
+            key:
+              type: string
+              description: AES 加密KEY
+            iv:
+              type: string
+              description: AES 加密IV
+            openWechat:
+              type: boolean
+              description: 微信通道是否启用
+            openAlipay:
+              type: boolean
+              description: 支付宝通道是否启用
+
+    ReviewCommon:
+      type: object
+      description: 用户审核
+      properties:
+        parentId:
+          type: number
+          description: 上级ID
+        parentNickname:
+          type: string
+          description: 上级昵称
+        id:
+          type: string
+          description: 用户ID
+        nickname:
+          type: string
+          description: 昵称
+        agent:
+          type: boolean
+          description: 是否是代理
+        phone:
+          type: string
+          description: 手机号
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 申请时间
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        state:
+          $ref: '#/components/schemas/ReviewState'
+        auditorRemark:
+          type: string
+          description: 审核备注
+    MerchantReview:
+      allOf:
+        - $ref: '#/components/schemas/ReviewCommon'
+        - type: object
+          description: 商户审核
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            minPay:
+              type: number
+              description: 最小下单金额
+            maxPay:
+              type: number
+              description: 最大下单金额
+            minWithdraw:
+              type: number
+              description: 最小提现金额
+            maxWithdraw:
+              type: number
+              description: 最大提现金额
+    MerchantReviewDetail:
+      allOf:
+        - $ref: '#/components/schemas/MerchantReview'
+        - type: object
+          description: 商户审核详情
+          properties:
+            parentNickname:
+              type: string
+              description: 上级昵称
+            parentWithdrawFee:
+              type: number
+              description: 上级提现手续费
+            parentChannel:
+              $ref: '#/components/schemas/Channel'
+
+    CuUserCommon:
+      type: object
+      description: 用户创建以及更新通用字段
+      properties:
+        parentId:
+          type: number
+          description: 上级ID
+        username:
+          type: string
+          description: 登陆账户
+        nickname:
+          type: string
+          description: 昵称
+        remark:
+          type: string
+          description: 备注
+        agent:
+          type: boolean
+          description: 是否是代理
+        password:
+          type: string
+          description: 登陆密码
+        secretPassword:
+          type: string
+          description: 安全密码
+        phone:
+          type: string
+          description: 手机号
+        withdrawFee:
+          type: number
+          description: 提现手续费
+        state:
+          $ref: '#/components/schemas/UserState'
+    CuMerchant:
+      allOf:
+        - $ref: '#/components/schemas/CuUserCommon'
+        - type: object
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            minPay:
+              type: number
+              description: 最小下单金额
+            maxPay:
+              type: number
+              description: 最大下单金额
+            minWithdraw:
+              type: number
+              description: 最小提现金额
+            maxWithdraw:
+              type: number
+              description: 最大提现金额
+            key:
+              type: string
+              description: AES 加密KEY
+            iv:
+              type: string
+              description: AES 加密IV
+            openWechat:
+              type: boolean
+              description: 微信通道是否启用
+            openAlipay:
+              type: boolean
+              description: 支付宝通道是否启用
+
+    UpdateReviewCommon:
+      type: object
+      description: 用户审核更新通用字段
+      properties:
+        state:
+          $ref: '#/components/schemas/UpdateReviewState'
+        auditorRemark:
+          type: string
+          description: 审核备注
+        withdrawFee:
+          type: number
+          description: 提现手续费
+    UpdateMerchantReview:
+      allOf:
+        - $ref: '#/components/schemas/UpdateReviewCommon'
+        - type: object
+          description: 更新商户审核数据
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            minPay:
+              type: number
+              description: 最小下单金额
+            maxPay:
+              type: number
+              description: 最大下单金额
+            minWithdraw:
+              type: number
+              description: 最小提现金额
+            maxWithdraw:
+              type: number
+              description: 最大提现金额
+
+    OrderCommon:
+      type: object
+      description: 订单通用字段
+      properties:
+        id:
+          type: number
+          description: 订单ID
+        amount:
+          type: number
+          description: 金额
+        actualAmount:
+          type: number
+          description: 实际金额
+        fee:
+          type: number
+          description: 手续费
+        remark:
+          type: string
+          description: 创建备注
+        auditorRemark:
+          type: string
+          description: 审核备注
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 创建实际
+        state:
+          $ref: '#/components/schemas/OrderState'
+        processAt:
+          type: string
+          format: 'date-time'
+          description: 处理时间
+    OrderDetailCommon:
+      type: object
+      description: 订单详情通用字段
+      properties:
+        bankName:
+          type: string
+          description: 银行名称
+        bankCardAccount:
+          type: string
+          description: 银行卡账户
+        bankCardNumber:
+          type: string
+          description: 银行卡号
+        bankCardAddress:
+          type: string
+          description: 银行卡地址
+        payCredit:
+          type: string
+          description: 支付凭证
+    OrderDetailWithPay:
+      type: object
+      properties:
+        payBankName:
+          type: string
+          description: 支付银行名称
+        payBankCardAccount:
+          type: string
+          description: 支付银行卡账户
+        payBankCardNumber:
+          type: string
+          description: 支付银行卡号
+        payBankCardAddress:
+          type: string
+          description: 支付银行卡地址
+    MerchantWithdrawOrder:
+      description: 商户提现单
+      allOf:
+        - $ref: '#/components/schemas/OrderCommon'
+        - type: object
+          properties:
+            orderSn:
+              type: string
+              description: 订单号
+            merchantId:
+              type: number
+              description: 商户ID
+            merchantNickname:
+              type: string
+              description: 商户昵称
+            providerId:
+              type: number
+              description: 服务商ID
+            providerUsername:
+              type: string
+              description: 服务商用户名
+            providerNickname:
+              type: string
+              description: 服务商昵称
+    MerchantWithdrawOrderDetail:
+      description: 商户提现单详情
+      allOf:
+        - $ref: '#/components/schemas/MerchantWithdrawOrder'
+        - $ref: '#/components/schemas/OrderDetailCommon'
+        - $ref: '#/components/schemas/OrderDetailWithPay'
+        - type: object
+          properties:
+            merchantAmount:
+              type: number
+              description: 商户余额
+
+    UpdateOrderCommon:
+      type: object
+      description: 更新订单通用字段
+      properties:
+        state:
+          $ref: '#/components/schemas/UpdateOrderState'
+        auditorRemark:
+          type: string
+          description: 审核备注
+
+    BankCard:
+      type: object
+      description: 银行卡
+      properties:
+        userId:
+          type: number
+          description: 用户ID
+        id:
+          type: number
+          description: 银行卡ID
+        name:
+          type: string
+          description: 银行名称
+        account:
+          type: string
+          description: 银行开户名
+        cardNumber:
+          type: string
+          description: 银行卡号
+        address:
+          type: string
+          description: 银行地址
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 银行卡创建时间
+        state:
+          $ref: '#/components/schemas/RecordState'
+    CuBankCard:
+      type: object
+      description: 创建以及更新银行卡
+      properties:
+        userId:
+          type: number
+          description: 银行卡涉及的用户ID
+        bankId:
+          type: number
+          description: 银行ID
+        account:
+          type: string
+          description: 银行开户名
+        cardNumber:
+          type: string
+          description: 银行卡号
+        address:
+          type: string
+          description: 银行地址
+        state:
+          $ref: '#/components/schemas/RecordState'
+
+    StatisticOrderCommon:
+      type: object
+      description: 统计通用字段
+      properties:
+        totalCount:
+          type: number
+          description: 总订单数
+        totalSuccess:
+          type: number
+          description: 总成功订单数
         totalAmount:
-          type: integer
-          format: int64
-          description: 直属下级总可用额度
-        totalLockAmount:
-          type: integer
-          format: int64
-          description: 直属下级总冻结额度
+          type: number
+          description: 总订单金额
+        totalSuccessAmount:
+          type: number
+          description: 总成功订单金额
+        successRate:
+          type: number
+          description: 成功率
+    StatisticOrderDate:
+      description: 按日期统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            date:
+              type: string
+              format: date
+              description: 日期
+    StatisticOrderUser:
+      description: 按用户统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            userId:
+              type: number
+              description: 用户ID
+    StatisticOrderUserDate:
+      description: 按用户以及日期统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            date:
+              type: string
+              format: date
+              description: 日期
+            userId:
+              type: number
+              description: 用户ID
+    StatisticOrderDateChannel:
+      description: 按日期以及通道统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            date:
+              type: string
+              format: date
+              description: 日期
+            channelType:
+              $ref: '#/components/schemas/ChannelType'
+    StatisticOrderUserChannel:
+      description: 按用户以及通道统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            userId:
+              type: number
+              description: 用户ID
+            channelType:
+              $ref: '#/components/schemas/ChannelType'
+    StatisticOrderUserDateChannel:
+      description: 按用户、日期以及通道统计订单
+      allOf:
+        - $ref: '#/components/schemas/StatisticOrderCommon'
+        - type: object
+          properties:
+            date:
+              type: string
+              format: date
+              description: 日期
+            userId:
+              type: number
+              description: 用户ID
+            channelType:
+              $ref: '#/components/schemas/ChannelType'
+
 
     ApiErrorResponse:
       type: object
@@ -985,12 +1985,334 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
-      
+
+  requestBodies:
+    CreateAccount:
+      description: 创建管理员
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuAccount'
+              - type: object
+                description: 配置
+                required:
+                  - username
+                  - nickname
+                  - password
+                  - phone
+                  - state
+    UpdateAccount:
+      description: 编辑管理员
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuAccount'
+    UpdateOrder:
+      description: 编辑订单
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              actualAmount:
+                type: number
+                format: double
+                description: 实付金额
+              state:
+                type: string
+                enum: [paid, cancel]
+                description: >
+                  支付状态:
+                    * `paid` - 已支付
+                    * `cancel`  - 关闭订单
+            required:
+              - state
+    CreateIpBlacklist:
+      description: 添加黑名单
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              merchantId:
+                type: number
+                format: int64
+                description: 商户ID，当为-1时全局禁用
+              ip:
+                type: string
+                description: 添加黑名单的IP
+    CreateMerchant:
+      description: 创建商户
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuMerchant'
+              - type: object
+                description: 配置
+                required:
+                  - nickname
+                  - agent
+                  - secretPassword
+                  - phone
+                  - withdrawFee
+                  - state
+                  - channel
+                  - minPay
+                  - maxPay
+                  - minWithdraw
+                  - maxWithdraw
+                  - key
+                  - iv
+                  - openWechat
+                  - openAlipay
+    UpdateMerchant:
+      description: 更新商户
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuMerchant'
+    UpdateMerchantReview:
+      description: 更新商户审核
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/UpdateMerchantReview'
+              - type: object
+                description: 配置
+                required:
+                  - state
+    UpdateOrderCommon:
+      description: 更新商户审核
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/UpdateOrderCommon'
+              - type: object
+                description: 配置
+                required:
+                  - state
+    CreateBankCard:
+      description: 创建银行卡
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuBankCard'
+              - type: object
+                description: 配置
+                required:
+                  - userId
+                  - bankId
+                  - account
+                  - cardNumber
+                  - address
+    UpdateBankCard:
+      description: 更新银行卡
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuBankCard'
+              - type: object
+                description: 配置
+                required:
+                  - userId
+
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: text
 
+  parameters:
+    PageablePage:
+      name: page
+      in: query
+      description: 页数
+      required: false
+      schema:
+        type: number
+        default: 1
+    PageableSize:
+      name: size
+      in: query
+      description: 页大小
+      required: false
+      schema:
+        type: number
+        default: 10
+    QueryStart:
+      name: fromTime
+      in: query
+      description: 开始时间
+      schema:
+        type: string
+        format: 'date-time'
+    QueryEnd:
+      name: toTime
+      in: query
+      description: 结束时间
+      schema:
+        type: string
+        format: 'date-time'
+    Id:
+      name: id
+      in: path
+      description: 数据ID
+      required: true
+      schema:
+        type: number
+        format: int64
+    ParentId:
+      name: parentId
+      in: query
+      description: 上级ID
+      schema:
+        type: number
+        format: int64
+    UserId:
+      name: userId
+      in: query
+      description: 用户ID
+      schema:
+        type: number
+        format: int64
+    Nickname:
+      name: nickname
+      in: query
+      description: 昵称
+      schema:
+        type: string
+    Remark:
+      name: remark
+      in: query
+      description: 备注
+      schema:
+        type: string
+    Phone:
+      name: phone
+      in: query
+      description: 手机号
+      schema:
+        type: string
+    UserListState:
+      name: state
+      in: query
+      description: 账户查询状态
+      schema:
+        $ref: '#/components/schemas/UserState'
+    UserReviewState:
+      name: state
+      in: query
+      description: 账户审核状态
+      schema:
+        $ref: '#/components/schemas/ReviewState'
+    Agent:
+      name: agent
+      in: query
+      description: 是否是代理
+      schema:
+        type: boolean
+    CollectorId:
+      name: collectorId
+      in: query
+      description: 码商ID
+      schema:
+        type: number
+        format: int64
+    CollectorUsername:
+      name: collectorUsername
+      in: query
+      description: 码商账户
+      schema:
+        type: string
+    MerchantId:
+      name: merchantId
+      in: query
+      description: 商户ID
+      schema:
+        type: number
+        format: int64
+    PayFormat:
+      name: payFormat
+      in: query
+      description: 类型
+      schema:
+        $ref: '#/components/schemas/PayFormat'
+    PayState:
+      name: payState
+      in: query
+      description: 支付状态
+      schema:
+        $ref: '#/components/schemas/PayState'
+    PayType:
+      name: payType
+      in: query
+      description: 支付类型
+      schema:
+        $ref: '#/components/schemas/PayType'
+    OrderId:
+      name: orderId
+      in: query
+      description: 订单ID
+      schema:
+        type: number
+        format: int64
+    OrderSn:
+      name: orderSn
+      in: query
+      description: 订单号
+      schema:
+        type: string
+    MerchantOrderId:
+      name: merchantOrderId
+      in: query
+      description: 商户订单号
+      schema:
+        type: string
+    OrderState:
+      name: state
+      in: query
+      description: 订单状态
+      schema:
+        $ref: '#/components/schemas/OrderState'
+    RecordState:
+      name: state
+      in: query
+      description: 数据状态
+      schema:
+        $ref: '#/components/schemas/RecordState'
+    MerchantMoneyLogType:
+      name: type
+      in: query
+      description: 资金日志类型
+      schema:
+        $ref: '#/components/schemas/MerchantMoneyLogType'
+    CollectorMoneyLogType:
+      name: type
+      in: query
+      description: 资金日志类型
+      schema:
+        $ref: '#/components/schemas/CollectorMoneyLogType'
+    BankAccount:
+      name: bankAccount
+      in: query
+      description: 银行账户
+      schema:
+        type: string
 security:
   - bearerAuth: []

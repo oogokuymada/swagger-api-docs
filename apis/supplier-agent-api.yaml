@@ -3,26 +3,26 @@ info:
   title: 码商代理API
   version: 1.0.3
 servers:
-- url: https://supplier-agent-api.zsf918.com/v1
+  - url: https://supplier-agent-api.zsf918.com/v1
 tags:
-- name: 人员
-  description: 人员类API
-- name: 财务
-  description: 财务类API
-- name: 团队
-  description: 团队类API
+  - name: 人员
+    description: 人员类API
+  - name: 财务
+    description: 财务类API
+  - name: 团队
+    description: 团队类API
 paths:
   /agent/supplier/subordinate:
     post:
       tags:
-      - 人员
+        - 人员
       summary: 创建新下级码商
       operationId: createSupplier
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/SupplierCreateReq'
+              $ref: '#/components/schemas/SupplierCreateReq'
       responses:
         200:
           description: 成功
@@ -42,43 +42,43 @@ paths:
   /agent/supplier/subordinates:
     get:
       tags:
-      - 人员
+        - 人员
       summary: 获取下级列表
       operationId: listSubordinates
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: agent
-        in: query
-        description: 是否为代理
-        schema:
-          type: boolean
-      - name: state
-        in: query
-        description: 下级状态
-        schema:
-          $ref: '#/components/schemas/SupplierState'
-      - name: q
-        in: query
-        description: ID｜手机号｜用户名
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: agent
+          in: query
+          description: 是否为代理
+          schema:
+            type: boolean
+        - name: state
+          in: query
+          description: 下级状态
+          schema:
+            $ref: '#/components/schemas/SupplierState'
+        - name: q
+          in: query
+          description: ID｜手机号｜用户名
+          schema:
+            type: string
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -106,16 +106,16 @@ paths:
   /agent/supplier/subordinate/{supplierId}:
     get:
       tags:
-      - 人员
+        - 人员
       summary: 获取单个下级信息
       operationId: getSubordinateById
       parameters:
-      - name: supplierId
-        in: path
-        description: 码商ID
-        required: true
-        schema:
-          type: string
+        - name: supplierId
+          in: path
+          description: 码商ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -137,21 +137,21 @@ paths:
 
     post:
       tags:
-      - 人员
+        - 人员
       summary: 更新单个下级信息
       operationId: updateSupplierById
       parameters:
-      - name: supplierId
-        in: path
-        description: 码商ID
-        required: true
-        schema:
-          type: string
+        - name: supplierId
+          in: path
+          description: 码商ID
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/SupplierUpdateReq'
+              $ref: '#/components/schemas/SupplierUpdateReq'
       responses:
         200:
           description: 成功
@@ -171,33 +171,33 @@ paths:
   /agent/supplier/bankCards:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取银行卡列表
       operationId: listBankCards
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: state
-        in: query
-        description: 银行卡状态
-        schema:
-          $ref: '#/components/schemas/BankCardState'
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: state
+          in: query
+          description: 银行卡状态
+          schema:
+            $ref: '#/components/schemas/BankCardState'
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -225,14 +225,14 @@ paths:
   /agent/supplier/bankCard:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 创建银行卡
       operationId: createBankCard
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
+              $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -252,21 +252,21 @@ paths:
   /agent/supplier/bankCard/{bankCardId}:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 编辑银行卡
       operationId: updateBank
       parameters:
-      - name: bankCardId
-        in: path
-        description: 银行卡ID
-        required: true
-        schema:
-          type: string
+        - name: bankCardId
+          in: path
+          description: 银行卡ID
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
+              $ref: '#/components/schemas/BankCardCreateOrUpdateReq'
       responses:
         200:
           description: 成功
@@ -284,16 +284,16 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
     delete:
       tags:
-      - 财务
+        - 财务
       summary: 删除银行卡
       operationId: deleteBankCard
       parameters:
-      - name: bankCardId
-        in: path
-        description: 银行卡ID
-        required: true
-        schema:
-          type: string
+        - name: bankCardId
+          in: path
+          description: 银行卡ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -313,50 +313,50 @@ paths:
   /agent/supplier/withdraws:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取提现申请列表
       operationId: listWithdraws
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: state
-        in: query
-        description: 提现状态
-        schema:
-          $ref: '#/components/schemas/WithdrawState'
-      - name: fromTime
-        in: query
-        description: 开始日期
-        schema:
-          type: string
-          format: date-time
-      - name: toTime
-        in: query
-        description: 结束日期
-        schema:
-          type: string
-          format: date-time
-      - name: accountName
-        in: query
-        description: 开户名
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: state
+          in: query
+          description: 提现状态
+          schema:
+            $ref: '#/components/schemas/WithdrawState'
+        - name: fromTime
+          in: query
+          description: 开始日期
+          schema:
+            type: string
+            format: date-time
+        - name: toTime
+          in: query
+          description: 结束日期
+          schema:
+            type: string
+            format: date-time
+        - name: accountName
+          in: query
+          description: 开户名
+          schema:
+            type: string
       responses:
         200:
           description: 成功
-          content:  
+          content:
             application/json:
               schema:
                 type: object
@@ -384,14 +384,14 @@ paths:
   /agent/supplier/withdraw:
     post:
       tags:
-      - 财务
+        - 财务
       summary: 创建提现申请
       operationId: createWithdraw
       requestBody:
         content:
           application/json:
             schema:
-                $ref: '#/components/schemas/WithdrawCreateReq'
+              $ref: '#/components/schemas/WithdrawCreateReq'
       responses:
         200:
           description: 成功
@@ -411,44 +411,44 @@ paths:
   /agent/supplier/transaction/{supplierId}:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取单个下级交易列表
       operationId: getSubordinateTransactionsById
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: supplierId
-        in: path
-        description: 码商ID
-        required: true
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: supplierId
+          in: path
+          description: 码商ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -480,31 +480,31 @@ paths:
   /agent/supplier/orders:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取下级订单统计列表
       operationId: getSubordinateOrdersStatistics
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: time
-        in: query
-        description: 日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: time
+          in: query
+          description: 日期
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         200:
           description: 成功
@@ -536,31 +536,31 @@ paths:
   /agent/supplier/financials:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取下级财务统计列表
       operationId: getSubordinateFinancials
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: time
-        in: query
-        description: 日期
-        required: true
-        schema:
-          type: string
-          format: date
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: time
+          in: query
+          description: 日期
+          required: true
+          schema:
+            type: string
+            format: date
       responses:
         200:
           description: 成功
@@ -588,48 +588,48 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-  
+
   /agent/supplier/financial/{supplierId}:
     get:
       tags:
-      - 财务
+        - 财务
       summary: 获取单个下级财务统计列表
       operationId: getSubordinateFinancialsById
       parameters:
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
-      - name: fromTime
-        in: query
-        description: 开始日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: toTime
-        in: query
-        description: 结束日期
-        required: true
-        schema:
-          type: string
-          format: date
-      - name: supplierId
-        in: path
-        description: 码商ID
-        required: true
-        schema:
-          type: string
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+        - name: fromTime
+          in: query
+          description: 开始日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: toTime
+          in: query
+          description: 结束日期
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: supplierId
+          in: path
+          description: 码商ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -660,25 +660,25 @@ paths:
 
   /agent/supplier/teams:
     get:
-      tags: 
-      - 团队
+      tags:
+        - 团队
       summary: 获取团队列表信息
       operationId: getSupplierTeams
-      parameters: 
-      - name: page
-        in: query
-        description: 页数
-        required: true
-        schema:
-          type: number
-          default: 1
-      - name: size
-        in: query
-        description: 页大小
-        required: true
-        schema:
-          type: number
-          default: 10
+      parameters:
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
       responses:
         200:
           description: 成功
@@ -709,17 +709,17 @@ paths:
 
   /agent/supplier/team/{supplierId}:
     get:
-      tags: 
-      - 团队
+      tags:
+        - 团队
       summary: 获取单个下级团队信息
       operationId: getSupplierTeamById
       parameters:
-      - name: supplierId
-        in: path
-        description: 码商ID
-        required: true
-        schema:
-          type: string
+        - name: supplierId
+          in: path
+          description: 码商ID
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: 成功
@@ -746,16 +746,16 @@ components:
         id:
           type: string
           description: 银行卡id
-        name: 
+        name:
           type: string
           description: 银行名称
         account:
           type: string
           description: 银行开户名
-        cardNumber: 
+        cardNumber:
           type: string
           description: 银行卡号
-        address: 
+        address:
           type: string
           description: 银行地址
         state:
@@ -773,16 +773,16 @@ components:
     BankCardCreateOrUpdateReq:
       type: object
       properties:
-        bankId: 
+        bankId:
           type: string
           description: 银行Id
         account:
           type: string
           description: 银行开户名
-        cardNumber: 
+        cardNumber:
           type: string
           description: 银行卡号
-        address: 
+        address:
           type: string
           description: 银行地址
 
@@ -832,7 +832,7 @@ components:
         reviewNote:
           type: string
           description: 审核备注
-    
+
     WithdrawState:
       type: string
       enum: [underReview, success, reject]
@@ -904,7 +904,7 @@ components:
             alipay:
               type: number
               description: 数值
-          
+
     Supplier:
       type: object
       properties:
@@ -976,7 +976,7 @@ components:
         value:
           type: number
           description: 数值
-          
+
     ValueType:
       type: string
       enum: [percent, absolute]
@@ -984,7 +984,7 @@ components:
         数值类型:
          * `percent` - 百分比
          * `absolute` - 绝对值
-          
+
     Transaction:
       type: object
       properties:
@@ -1014,7 +1014,7 @@ components:
           type: string
           format: date-time
           description: 创建日期
-    
+
     OrdersStatistics:
       type: object
       properties:
@@ -1048,7 +1048,7 @@ components:
               totalSuccessOrdersAmount:
                 type: number
                 description: 总成功订单金额
-    
+
     FinancialStatistics:
       type: object
       properties:
@@ -1078,7 +1078,7 @@ components:
               totalRebateAmount:
                 type: number
                 description: 总返佣金额
-    
+
     FinancialStatisticsDetail:
       type: object
       properties:
@@ -1154,7 +1154,7 @@ components:
   responses:
     UnauthorizedError:
       description: Access token is missing or invalid
-      
+
   securitySchemes:
     bearerAuth:
       type: http

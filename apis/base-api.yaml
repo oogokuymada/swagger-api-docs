@@ -395,7 +395,7 @@ components:
           type: string
           format: date-time
           description: 创建日期（申请日期）
-      example: 
+      example:
         id: '000000'
         username: 'nongfu'
         nickname: 'snake'
@@ -431,7 +431,7 @@ components:
          * `lock` - 锁定
          * `underReview` - 审核中
          * `reviewReject` - 拒绝
-         
+
     MerchantDocs:
       type: object
       properties:
