@@ -1494,7 +1494,56 @@ paths:
                     type: array
                     description: 记录
                     items:
-                      $ref: '#/components/schemas/BankCard'
+                      $ref: '#/components/schemas/Route'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/route/{id}:
+    get:
+      summary: 获取码商通道详情
+      operationId: GetCollectorRoute
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RouteDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商通道
+      operationId: UpdateCollectorRoute
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCollectorRoute'
+      responses:
+        200:
+          description: 成功
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -2313,6 +2362,119 @@ components:
           description: 备注
         state:
           $ref: '#/components/schemas/AdminState'
+
+    Route:
+      type: object
+      description: 支付通道信息
+      properties:
+        id:
+          type: number
+          description: 支付通道ID
+        name:
+          type: string
+          description: 码商备注
+        userId:
+          type: number
+          description: 码商ID
+        username:
+          type: string
+          description: 码商用户名
+        payType:
+          $ref: '#/components/schemas/PayType'
+        image:
+          type: string
+          description: 二维码地址
+        state:
+          $ref: '#/components/schemas/RouteState'
+        minAmount:
+          type: number
+          description: 最小金额
+        maxAmount:
+          type: number
+          description: 最大金额
+        totalAmount:
+          type: number
+          description: 总金额
+        usableAmount:
+          type: number
+          description: 可用金额
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 添加时间
+        provinceId:
+          type: number
+          description: 省份ID
+        provinceName:
+          type: string
+          description: 省份名
+        cityId:
+          type: number
+          description: 城市ID
+        cityName:
+          type: string
+          description: 城市名
+        totalCount:
+          type: number
+          description: 总订单数
+        totalSuccess:
+          type: number
+          description: 总成功订单数
+        successRate:
+          type: number
+          description: 成功率
+
+    RouteDetail:
+      type: object
+      description: 支付通道详情
+      properties:
+        id:
+          type: number
+          description: 支付通道ID
+        name:
+          type: string
+          description: 码商备注
+        userId:
+          type: number
+          description: 码商ID
+        username:
+          type: string
+          description: 码商用户名
+        payType:
+          $ref: '#/components/schemas/PayType'
+        image:
+          type: string
+          description: 二维码地址
+        state:
+          $ref: '#/components/schemas/RouteState'
+        minAmount:
+          type: number
+          description: 最小金额
+        maxAmount:
+          type: number
+          description: 最大金额
+        totalAmount:
+          type: number
+          description: 总金额
+        usableAmount:
+          type: number
+          description: 可用金额
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 添加时间
+        provinceId:
+          type: number
+          description: 省份ID
+        provinceName:
+          type: string
+          description: 省份名
+        cityId:
+          type: number
+          description: 城市ID
+        cityName:
+          type: string
+          description: 城市名
 
     MoneyLogCommonType:
       type: string
@@ -3322,6 +3484,30 @@ components:
               - type: object
                 required:
                   - state
+
+    UpdateCollectorRoute:
+      description: 更新码商通道
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: 码商备注
+              minAmount:
+                type: number
+                description: 最小金额
+              maxAmount:
+                type: number
+                description: 最大金额
+              totalAmount:
+                type: number
+                description: 总金额
+              state:
+                $ref: '#/components/schemas/RouteState'
+
     CreateUserLevel:
       description: 创建用户等级
       required: true
