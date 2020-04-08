@@ -334,7 +334,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/UserId'
         - name: ip
           in: query
           description: IP
@@ -381,7 +381,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/UserId'
         - name: ip
           in: query
           description: IP
@@ -439,6 +439,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 批量更新IP黑名单状态
+      operationId: batchUpdateIpBlacklist
+      tags:
+        - 订单
+      requestBody:
+        $ref: '#/components/requestBodies/BatchUpdateIpListState'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/merchants:
     get:
       summary: 获取商户列表
@@ -446,7 +466,8 @@ paths:
       tags:
         - 商户
       parameters:
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Nickname'
         - $ref: '#/components/parameters/Remark'
         - $ref: '#/components/parameters/Phone'
@@ -560,9 +581,9 @@ paths:
         - 商户
       parameters:
         - $ref: '#/components/parameters/ParentId'
-        - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Nickname'
         - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Agent'
         - $ref: '#/components/parameters/UserReviewState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -652,6 +673,7 @@ paths:
         - 商户
       parameters:
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -740,7 +762,7 @@ paths:
       tags:
         - 商户
       parameters:
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/BankAccount'
         - $ref: '#/components/parameters/RecordState'
         - $ref: '#/components/parameters/PageablePage'
@@ -866,12 +888,12 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
   /admin/merchant/moneyLogs:
     get:
-      summary: 获取资金日志列表
+      summary: 获取商户资金日志列表
       operationId: ListMerchantMoneyLogs
       tags:
         - 商户
       parameters:
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/MerchantMoneyLogType'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
@@ -911,7 +933,7 @@ paths:
       tags:
         - 商户
       parameters:
-        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
         - $ref: '#/components/parameters/QueryStart'
@@ -944,8 +966,913 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
+  /admin/collectors:
+    get:
+      summary: 获取码商列表
+      operationId: ListCollectors
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Nickname'
+        - $ref: '#/components/parameters/Remark'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/WorkState'
+        - $ref: '#/components/parameters/UserListState'
+        - $ref: '#/components/parameters/Agent'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/Online'
+        - $ref: '#/components/parameters/LevelId'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/Collector'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector:
+    post:
+      summary: 创建码商
+      operationId: CreateCollector
+      tags:
+        - 码商
+      requestBody:
+        $ref: '#/components/requestBodies/CreateCollector'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/{id}:
+    get:
+      summary: 获取码商
+      operationId: GetCollector
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectorDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商
+      operationId: UpdateMerchant
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCollector'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/levels:
+    get:
+      summary: 获取码商等级列表
+      operationId: ListCollectorLevels
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/UserLevel'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/level:
+    post:
+      summary: 创建码商等级
+      operationId: CreateCollectorLevel
+      tags:
+        - 码商
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUserLevel'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/level/{id}:
+    get:
+      summary: 获取码商等级信息
+      operationId: GetCollectorLevel
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLevel'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商等级
+      operationId: UpdateCollectorLevel
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUserLevel'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/reviews:
+    get:
+      summary: 获取码商审核列表
+      operationId: ListCollectorReviews
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/ParentId'
+        - $ref: '#/components/parameters/Nickname'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Agent'
+        - $ref: '#/components/parameters/UserReviewState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/CollectorReview'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/review/{id}:
+    get:
+      summary: 获取码商审核
+      operationId: GetCollectorReview
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectorReviewDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商审核
+      operationId: UpdateCollectorReview
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateCollectorReview'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/recharges:
+    get:
+      summary: 获取码商充值列表
+      operationId: ListCollectorRecharges
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/CollectorRechargeOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/recharge/{id}:
+    get:
+      summary: 获取码商充值单
+      operationId: GetCollectorRecharge
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectorRechargeOrderDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商充值单
+      operationId: UpdateCollectorRecharge
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/withdraws:
+    get:
+      summary: 获取码商提现列表
+      operationId: ListCollectorWithdraws
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/CollectorWithdrawOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/withdraw/{id}:
+    get:
+      summary: 获取码商提现单
+      operationId: GetCollectorWithdraw
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectorWithdrawOrderDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商提现单
+      operationId: UpdateCollectorWithdraw
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/routes:
+    get:
+      summary: 获取码商通道列表
+      operationId: ListCollectorRoutes
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/RouteState'
+        - $ref: '#/components/parameters/BankAccount'
+        - $ref: '#/components/parameters/PayType'
+        - $ref: '#/components/parameters/ProvinceId'
+        - $ref: '#/components/parameters/CityId'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/BankCard'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/route/batch-update-state:
+    put:
+      summary: 批量更新通道状态
+      operationId: BatchUpdateCollectorRouteState
+      tags:
+        - 码商
+      requestBody:
+        $ref: '#/components/requestBodies/BatchUpdateRouteState'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/moneyLogs:
+    get:
+      summary: 获取码商资金日志列表
+      operationId: ListCollectorMoneyLogs
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/CollectorMoneyLogType'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/CollectorMoneyLog'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /admin/finance/platform:
+    get:
+      summary: 查询平台收益列表
+      operationId: ListPlatformFinances
+      tags:
+        - 财务
+      parameters:
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/StatisticPlatformIncome'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/finance/merchant:
+    get:
+      summary: 查询商户统计列表
+      operationId: ListMerchantFinances
+      tags:
+        - 财务
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/StatisticMerchant'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/finance/collector:
+    get:
+      summary: 查询码商统计列表
+      operationId: ListCollectorFinances
+      tags:
+        - 财务
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/StatisticCollector'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /admin/merchant-agent/withdraws:
+    get:
+      summary: 获取商户代理提现列表
+      operationId: ListMerchantWithdraws
+      tags:
+        - 商户代理
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/MerchantAgentWithdrawOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant-agent/withdraw/{id}:
+    get:
+      summary: 获取商户代理提现单
+      operationId: GetMerchantAgentWithdraw
+      tags:
+        - 商户代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantAgentWithdrawOrderDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新商户代理提现单
+      operationId: UpdateMerchantAgentWithdraw
+      tags:
+        - 商户代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /admin/collector-agent/withdraws:
+    get:
+      summary: 获取码商代理提现列表
+      operationId: ListCollectorWithdraws
+      tags:
+        - 码商代理
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/CollectorAgentWithdrawOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector-agent/withdraw/{id}:
+    get:
+      summary: 获取码商代理提现单
+      operationId: GetCollectorAgentWithdraw
+      tags:
+        - 码商代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectorAgentWithdrawOrderDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商代理提现单
+      operationId: UpdateCollectorAgentWithdraw
+      tags:
+        - 码商代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
 components:
   schemas:
+    IsOnline:
+      type: boolean
+      description: 是否在线
     AdminState:
       type: string
       enum: [ban, enable]
@@ -1330,6 +2257,62 @@ components:
         ip:
           type: string
           description: IP
+    WorkState:
+      type: string
+      enum: [stopped, working]
+      description: >
+        工作状态:
+          * `stopped` - 已停工
+          * `working` - 开工中
+    RouteState:
+      type: string
+      enum: [disable, enable, lock, delete, offShelves]
+      description: >
+        数据状态:
+          * `disable` - 禁用
+          * `enable` - 启用
+          * `lock` - 锁定/风控
+          * `delete`  - 删除
+          * `offShelves`  - 下架
+
+
+    UserLevel:
+      type: object
+      description: 用户等级
+      properties:
+        id:
+          type: number
+          description: ID
+        name:
+          type: string
+          description: 等级名称
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 创建时间
+        delay:
+          type: number
+          description: 延迟显示（秒）
+        remark:
+          type: string
+          description: 备注
+        state:
+          $ref: '#/components/schemas/AdminState'
+    CuUserLevel:
+      type: object
+      description: 更新用户等级
+      properties:
+        name:
+          type: string
+          description: 等级名称
+        delay:
+          type: number
+          description: 延迟显示（秒）
+        remark:
+          type: string
+          description: 备注
+        state:
+          $ref: '#/components/schemas/AdminState'
 
     MoneyLogCommonType:
       type: string
@@ -1439,7 +2422,6 @@ components:
           properties:
             type:
               $ref: '#/components/schemas/CollectorMoneyLogType'
-
 
     CuAccount:
       type: object
@@ -1552,6 +2534,56 @@ components:
             openAlipay:
               type: boolean
               description: 支付宝通道是否启用
+    Collector:
+      description: 码商信息
+      allOf:
+        - $ref: '#/components/schemas/UserCommon'
+        - type: object
+          properties:
+            username:
+              type: string
+              description: 登陆账户
+            channel:
+              $ref: '#/components/schemas/Channel'
+            balance:
+              type: number
+              description: 跑分余额
+            workState:
+              $ref: '#/components/schemas/WorkState'
+            loginIp:
+              type: string
+              description: 登陆IP
+            levelId:
+              type: number
+              description: 等级ID
+            levelName:
+              type: string
+              description: 等级名称
+            totalCount:
+              type: number
+              description: 总订单数
+            totalSuccess:
+              type: number
+              description: 总成功订单数
+            successRate:
+              type: number
+              description: 成功率
+    CollectorDetail:
+      description: 码商详情
+      allOf:
+        - $ref: '#/components/schemas/Collector'
+        - type: object
+          properties:
+            parentNickname:
+              type: string
+              description: 上级昵称
+            parentChannel:
+              $ref: '#/components/schemas/Channel'
+            rechargeFeeType:
+              $ref: '#/components/schemas/RateType'
+            rechargeFee:
+              type: number
+              description: 充值手续费
 
     ReviewCommon:
       type: object
@@ -1579,9 +2611,6 @@ components:
           type: string
           format: 'date-time'
           description: 申请时间
-        withdrawFee:
-          type: number
-          description: 提现手续费
         state:
           $ref: '#/components/schemas/ReviewState'
         auditorRemark:
@@ -1613,12 +2642,35 @@ components:
         - type: object
           description: 商户审核详情
           properties:
-            parentNickname:
-              type: string
-              description: 上级昵称
             parentWithdrawFee:
               type: number
               description: 上级提现手续费
+            parentChannel:
+              $ref: '#/components/schemas/Channel'
+    CollectorReview:
+      allOf:
+        - $ref: '#/components/schemas/ReviewCommon'
+        - type: object
+          description: 码商审核
+    CollectorReviewDetail:
+      allOf:
+        - $ref: '#/components/schemas/MerchantReview'
+        - type: object
+          description: 商户审核详情
+          properties:
+            parentNickname:
+              type: string
+              description: 上级昵称
+            parentWithdrawFeeType:
+              $ref: '#/components/schemas/RateType'
+            parentWithdrawFee:
+              type: number
+              description: 上级提现手续费
+            parentRechargeFeeType:
+              $ref: '#/components/schemas/RateType'
+            parentRechargeFee:
+              type: number
+              description: 上级充值手续费
             parentChannel:
               $ref: '#/components/schemas/Channel'
 
@@ -1628,7 +2680,7 @@ components:
       properties:
         parentId:
           type: number
-          description: 上级ID
+          description: 上级ID[仅在创建时可设置]
         username:
           type: string
           description: 登陆账户
@@ -1686,6 +2738,23 @@ components:
             openAlipay:
               type: boolean
               description: 支付宝通道是否启用
+    CuCollector:
+      allOf:
+        - $ref: '#/components/schemas/CuUserCommon'
+        - type: object
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            rechargeFeeType:
+              $ref: '#/components/schemas/RateType'
+            rechargeFee:
+              type: number
+              description: 充值手续费
+            workState:
+              $ref: '#/components/schemas/WorkState'
+            levelId:
+              type: number
+              description: 等级ID
 
     UpdateReviewCommon:
       type: object
@@ -1693,6 +2762,9 @@ components:
       properties:
         state:
           $ref: '#/components/schemas/UpdateReviewState'
+        remark:
+          type: string
+          description: 后台备注
         auditorRemark:
           type: string
           description: 审核备注
@@ -1719,6 +2791,21 @@ components:
             maxWithdraw:
               type: number
               description: 最大提现金额
+    UpdateCollectorReview:
+      allOf:
+        - $ref: '#/components/schemas/UpdateReviewCommon'
+        - type: object
+          description: 更新商户审核数据
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
+            withdrawFeeType:
+              $ref: '#/components/schemas/RateType'
+            rechargeFeeType:
+              $ref: '#/components/schemas/RateType'
+            rechargeFee:
+              type: number
+              description: 充值手续费
 
     OrderCommon:
       type: object
@@ -1752,6 +2839,19 @@ components:
           type: string
           format: 'date-time'
           description: 处理时间
+    AgentOrderCommon:
+      type: object
+      description: 代理订单通用字段
+      properties:
+        userId:
+          type: number
+          description: 代理ID
+        nickname:
+          type: string
+          description: 代理昵称
+        phone:
+          type: string
+          description: 代理手机
     OrderDetailCommon:
       type: object
       description: 订单详情通用字段
@@ -1801,6 +2901,47 @@ components:
             merchantNickname:
               type: string
               description: 商户昵称
+            merchantPhone:
+              type: string
+              description: 商户手机
+            providerId:
+              type: number
+              description: 服务商ID
+            providerUsername:
+              type: string
+              description: 服务商用户名
+    MerchantWithdrawOrderDetail:
+      description: 商户提现单详情
+      allOf:
+        - $ref: '#/components/schemas/MerchantWithdrawOrder'
+        - $ref: '#/components/schemas/OrderDetailCommon'
+        - $ref: '#/components/schemas/OrderDetailWithPay'
+    MerchantAgentWithdrawOrder:
+      description: 商户代理提现单
+      allOf:
+        - $ref: '#/components/schemas/OrderCommon'
+        - $ref: '#/components/schemas/AgentOrderCommon'
+    MerchantAgentWithdrawOrderDetail:
+      description: 商户代理提现单详情
+      allOf:
+        - $ref: '#/components/schemas/MerchantAgentWithdrawOrder'
+        - $ref: '#/components/schemas/OrderDetailCommon'
+        - $ref: '#/components/schemas/OrderDetailWithPay'
+    CollectorRechargeOrder:
+      description: 码商充值单
+      allOf:
+        - $ref: '#/components/schemas/OrderCommon'
+        - type: object
+          properties:
+            collectorId:
+              type: number
+              description: 码商ID
+            collectorUsername:
+              type: string
+              description: 码商用户名
+            collectorNickname:
+              type: string
+              description: 码商昵称
             providerId:
               type: number
               description: 服务商ID
@@ -1810,17 +2951,56 @@ components:
             providerNickname:
               type: string
               description: 服务商昵称
-    MerchantWithdrawOrderDetail:
-      description: 商户提现单详情
+    CollectorRechargeOrderDetail:
+      description: 码商充值单详情
       allOf:
-        - $ref: '#/components/schemas/MerchantWithdrawOrder'
+        - $ref: '#/components/schemas/CollectorRechargeOrder'
         - $ref: '#/components/schemas/OrderDetailCommon'
         - $ref: '#/components/schemas/OrderDetailWithPay'
+    CollectorWithdrawOrder:
+      description: 码商提现单
+      allOf:
+        - $ref: '#/components/schemas/OrderCommon'
         - type: object
           properties:
-            merchantAmount:
+            orderSn:
+              type: string
+              description: 订单号
+            collectorId:
               type: number
-              description: 商户余额
+              description: 码商ID
+            collectorUsername:
+              type: string
+              description: 码商用户名
+            collectorNickname:
+              type: string
+              description: 码商昵称
+            providerId:
+              type: number
+              description: 服务商ID
+            providerUsername:
+              type: string
+              description: 服务商用户名
+            providerNickname:
+              type: string
+              description: 服务商昵称
+    CollectorWithdrawOrderDetail:
+      description: 码商提现单详情
+      allOf:
+        - $ref: '#/components/schemas/CollectorRechargeOrder'
+        - $ref: '#/components/schemas/OrderDetailCommon'
+        - $ref: '#/components/schemas/OrderDetailWithPay'
+    CollectorAgentWithdrawOrder:
+      description: 码商代理提现单
+      allOf:
+        - $ref: '#/components/schemas/OrderCommon'
+        - $ref: '#/components/schemas/AgentOrderCommon'
+    CollectorAgentWithdrawOrderDetail:
+      description: 码商代理提现单详情
+      allOf:
+        - $ref: '#/components/schemas/CollectorAgentWithdrawOrder'
+        - $ref: '#/components/schemas/OrderDetailCommon'
+        - $ref: '#/components/schemas/OrderDetailWithPay'
 
     UpdateOrderCommon:
       type: object
@@ -1901,61 +3081,6 @@ components:
         successRate:
           type: number
           description: 成功率
-    StatisticOrderDate:
-      description: 按日期统计订单
-      allOf:
-        - $ref: '#/components/schemas/StatisticOrderCommon'
-        - type: object
-          properties:
-            date:
-              type: string
-              format: date
-              description: 日期
-    StatisticOrderUser:
-      description: 按用户统计订单
-      allOf:
-        - $ref: '#/components/schemas/StatisticOrderCommon'
-        - type: object
-          properties:
-            userId:
-              type: number
-              description: 用户ID
-    StatisticOrderUserDate:
-      description: 按用户以及日期统计订单
-      allOf:
-        - $ref: '#/components/schemas/StatisticOrderCommon'
-        - type: object
-          properties:
-            date:
-              type: string
-              format: date
-              description: 日期
-            userId:
-              type: number
-              description: 用户ID
-    StatisticOrderDateChannel:
-      description: 按日期以及通道统计订单
-      allOf:
-        - $ref: '#/components/schemas/StatisticOrderCommon'
-        - type: object
-          properties:
-            date:
-              type: string
-              format: date
-              description: 日期
-            channelType:
-              $ref: '#/components/schemas/ChannelType'
-    StatisticOrderUserChannel:
-      description: 按用户以及通道统计订单
-      allOf:
-        - $ref: '#/components/schemas/StatisticOrderCommon'
-        - type: object
-          properties:
-            userId:
-              type: number
-              description: 用户ID
-            channelType:
-              $ref: '#/components/schemas/ChannelType'
     StatisticOrderUserDateChannel:
       description: 按用户、日期以及通道统计订单
       allOf:
@@ -1971,7 +3096,72 @@ components:
               description: 用户ID
             channelType:
               $ref: '#/components/schemas/ChannelType'
-
+    StatisticPlatformIncome:
+      type: object
+      description: 平台统计
+      properties:
+        date:
+          type: string
+          format: 'date'
+          description: 统计日期
+        merchantOrderIncome:
+          type: number
+          description: 商户订单收益
+        collectorWithdrawIncome:
+          type: number
+          description: 码商提现收益
+        businessWithdrawIncome:
+          type: number
+          description: 商户提现收益
+        totalIncome:
+          type: number
+          description: 总收益
+    StatisticUserCommon:
+      type: object
+      description: 用户[商户|码商]统计
+      properties:
+        userId:
+          type: number
+          description: 用户ID
+        amount:
+          type: number
+          description: 当前账户余额
+        totalOrderCount:
+          type: number
+          description: 订单总数
+        totalOrderAmount:
+          type: number
+          description: 订单总金额
+        totalWithdrawAmount:
+          type: number
+          description: 提现总金额
+        totalSuccessWithdrawAmount:
+          type: number
+          description: 提现成功总金额
+    StatisticMerchant:
+      description: 商户统计
+      allOf:
+        - $ref: '#/components/schemas/StatisticUserCommon'
+        - type: object
+          properties:
+            totalOrderFee:
+              type: number
+              description: 订单总手续费
+    StatisticCollector:
+      description: 码商统计
+      allOf:
+        - $ref: '#/components/schemas/StatisticUserCommon'
+        - type: object
+          properties:
+            lockAmount:
+              type: number
+              description: 冻结金额
+            commission:
+              type: number
+              description: 当前佣金余额
+            totalOrderCommission:
+              type: number
+              description: 订单总佣金
 
     ApiErrorResponse:
       type: object
@@ -2055,7 +3245,6 @@ components:
             allOf:
               - $ref: '#/components/schemas/CuMerchant'
               - type: object
-                description: 配置
                 required:
                   - nickname
                   - agent
@@ -2079,6 +3268,38 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/CuMerchant'
+    CreateCollector:
+      description: 创建码商
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuCollector'
+              - type: object
+                required:
+                  - username
+                  - nickname
+                  - agent
+                  - password
+                  - secretPassword
+                  - phone
+                  - withdrawFeeType
+                  - withdrawFee
+                  - rechargeFeeType
+                  - rechargeFee
+                  - state
+                  - channel
+                  - levelId
+                  - workState
+    UpdateCollector:
+      description: 更新码商
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuCollector'
+
     UpdateMerchantReview:
       description: 更新商户审核
       required: true
@@ -2088,11 +3309,42 @@ components:
             allOf:
               - $ref: '#/components/schemas/UpdateMerchantReview'
               - type: object
-                description: 配置
                 required:
                   - state
+    UpdateCollectorReview:
+      description: 更新码商审核
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/UpdateCollectorReview'
+              - type: object
+                required:
+                  - state
+    CreateUserLevel:
+      description: 创建用户等级
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuUserLevel'
+              - type: object
+                required:
+                  - name
+                  - delay
+                  - state
+    UpdateUserLevel:
+      description: 创建用户等级
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuUserLevel'
+
     UpdateOrderCommon:
-      description: 更新商户审核
+      description: 更新订单
       required: true
       content:
         application/json:
@@ -2100,7 +3352,6 @@ components:
             allOf:
               - $ref: '#/components/schemas/UpdateOrderCommon'
               - type: object
-                description: 配置
                 required:
                   - state
     CreateBankCard:
@@ -2112,7 +3363,6 @@ components:
             allOf:
               - $ref: '#/components/schemas/CuBankCard'
               - type: object
-                description: 配置
                 required:
                   - userId
                   - bankId
@@ -2128,9 +3378,39 @@ components:
             allOf:
               - $ref: '#/components/schemas/CuBankCard'
               - type: object
-                description: 配置
                 required:
                   - userId
+
+    BatchUpdateIpListState:
+      description: 批量更新IP黑名单状态
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: number
+                description: 批量更新IP黑名单ID
+              state:
+                $ref: '#/components/schemas/AdminState'
+
+    BatchUpdateRouteState:
+      description: 批量更新通道状态
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              ids:
+                type: array
+                items:
+                  type: number
+                description: 批量更新通道ID
+              state:
+                $ref: '#/components/schemas/RouteState'
 
   securitySchemes:
     bearerAuth:
@@ -2227,6 +3507,13 @@ components:
       description: 是否是代理
       schema:
         type: boolean
+    LevelId:
+      name: levelId
+      in: query
+      description: 等级ID
+      schema:
+        type: number
+
     CollectorId:
       name: collectorId
       in: query
@@ -2296,6 +3583,24 @@ components:
       description: 数据状态
       schema:
         $ref: '#/components/schemas/RecordState'
+    RouteState:
+      name: state
+      in: query
+      description: 通道状态
+      schema:
+        $ref: '#/components/schemas/RouteState'
+    WorkState:
+      name: workState
+      in: query
+      description: 工作状态
+      schema:
+        $ref: '#/components/schemas/WorkState'
+    Online:
+      name: online
+      in: query
+      description: 在线
+      schema:
+        $ref: '#/components/schemas/IsOnline'
     MerchantMoneyLogType:
       name: type
       in: query
@@ -2314,5 +3619,18 @@ components:
       description: 银行账户
       schema:
         type: string
+    ProvinceId:
+      name: provinceId
+      in: query
+      description: 省份ID
+      schema:
+        type: number
+    CityId:
+      name: cityId
+      in: query
+      description: 城市ID
+      schema:
+        type: number
+
 security:
   - bearerAuth: []
