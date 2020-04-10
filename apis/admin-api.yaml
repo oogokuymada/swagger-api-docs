@@ -238,6 +238,79 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/logs:
+    get:
+      summary: 获取下单日志列表
+      operationId: ListOrderLogs
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/MerchantId'
+        - $ref: '#/components/parameters/MerchantOrderId'
+        - name: strategy
+          in: query
+          description: 策略
+          schema:
+            $ref: '#/components/schemas/PayStrategy'
+        - name: status
+          in: query
+          description: 下单状态
+          schema:
+            $ref: '#/components/schemas/PayResult'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderLog'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/order/log/{id}:
+    get:
+      summary: 获取订单日志详情
+      operationId: GetOrderLog
+      tags:
+        - 订单
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderLogDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/order/notifies:
     get:
       summary: 获取订单通知列表
@@ -1973,6 +2046,21 @@ components:
         商户单支付类型:
           * `wechat` - 微信
           * `alipay` - 支付宝
+    PayStrategy:
+      type: string
+      enum: [unknown, grab, dispatch]
+      description: >
+        下单策略:
+          * `unknown` - 未知
+          * `grab` - 抢单
+          * `dispatch` - 派单
+    PayResult:
+      type: string
+      enum: [success, exception]
+      description: >
+        下单结果
+          * `success` - 下单成功
+          * `exception` - 下单异常
     NotifyState:
       type: string
       enum: [running, success, fail]
@@ -2190,6 +2278,52 @@ components:
         city:
           type: string
           description: IP匹配的城市
+    OrderLog:
+      type: object
+      description: 下单日志
+      properties:
+        id:
+          type: string
+          description: 日志ID
+        orderSn:
+          type: string
+          description: 商户订单号
+        merchantId:
+          type: number
+          description: 商户ID
+        merchantNickname:
+          type: string
+          description: 商户昵称
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 下单时间
+        cost:
+          type: number
+          description: 耗费时间
+        strategy:
+          $ref: '#/components/schemas/PayStrategy'
+        ip:
+          type: string
+          description: 来源IP
+        status:
+          $ref: '#/components/schemas/PayResult'
+        errorCode:
+          type: number
+          description: 错误码
+        errorMessage:
+          type: string
+          description: 错误信息
+
+    OrderLogDetail:
+      description: 下单日志详情
+      allOf:
+        - $ref: '#/components/schemas/OrderLog'
+        - type: object
+          properties:
+            parameters:
+              type: string
+              description: 下单参数
     NotifyLog:
       type: object
       description: 订单通知的日志
