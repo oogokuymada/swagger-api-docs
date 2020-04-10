@@ -2359,6 +2359,7 @@ components:
         payAt:
           type: string
           format: 'date-time'
+          description: 支付时间
         count:
           type: integer
           description: 通知次数
