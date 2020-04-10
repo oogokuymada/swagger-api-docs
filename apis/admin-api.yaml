@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Admin API
-  version: 1.0.0
+  version: 1.0.1
 servers:
   - url: https://admin-api.zsf918.com/v1
 tags:
@@ -2198,9 +2198,10 @@ components:
         collectorUsername:
           type: string
           description: 码商账户名
-        collectorRate:
-          type: number
-          description: 码商接单时的费率
+        collectorChannel:
+          description: 下单时用的码商佣金费率以及计算类型
+          allOf:
+            - $ref: '#/components/schemas/ChannelRate'
         collectorCommission:
           type: number
           format: double
@@ -2220,9 +2221,10 @@ components:
         merchantNickname:
           type: string
           description: 商户昵称
-        merchantRate:
-          type: number
-          description: 商户手续费率
+        merchantChannel:
+          description: 下单时用的商户手续费率以及计算类型
+          allOf:
+            - $ref: '#/components/schemas/ChannelRate'
         merchantFee:
           type: number
           format: double
