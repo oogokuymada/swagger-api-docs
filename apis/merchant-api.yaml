@@ -685,16 +685,16 @@ components:
           description: 已支付订单数
         totalOrdersAmount:
           type: number
-          description: 总订单金额
+          description: 总下单金额
         totalPaidOrdersAmount:
           type: number
-          description: 总支付订单金额
+          description: 已支付订单总下单金额
         totalFee:
           type: number
-          description: 总手续费
+          description: 已支付订单总手续费
         totalActualAmount:
           type: number
-          description: 总到账金额
+          description: 已支付订单总实付金额
           
     Transaction:
       type: object
