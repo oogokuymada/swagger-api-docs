@@ -3718,7 +3718,7 @@ components:
                   type: number
                 description: 批量更新IP黑名单ID
               state:
-                $ref: '#/components/schemas/AdminState'
+                $ref: '#/components/schemas/RecordState'
 
     BatchUpdateRouteState:
       description: 批量更新通道状态
