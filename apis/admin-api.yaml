@@ -164,6 +164,7 @@ paths:
         - $ref: '#/components/parameters/OrderId'
         - $ref: '#/components/parameters/OrderSn'
         - $ref: '#/components/parameters/MerchantOrderId'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
       responses:
@@ -646,6 +647,181 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/levels:
+    get:
+      summary: 获取商户等级列表
+      operationId: ListMerchantLevels
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/MerchantLevel'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/level:
+    post:
+      summary: 创建商户等级
+      operationId: CreateMerchantLevel
+      tags:
+        - 商户
+      requestBody:
+        $ref: '#/components/requestBodies/CreateMerchantLevel'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/level/{id}:
+    get:
+      summary: 获取商户等级信息
+      operationId: GetMerchantLevel
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchantLevel'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新商户等级
+      operationId: UpdateMerchantLevel
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateMerchantLevel'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除商户等级
+      operationId: DeleteMerchantLevel
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /admin/merchant/amount/{id}:
+    put:
+      summary: 更新商户金额
+      operationId: UpdateMerchantAmount
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateMoney'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/google-reset/{id}:
+    post:
+      summary: 重置商户谷歌验证
+      operationId: ResetMerchantGoogle
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/merchant/reviews:
     get:
       summary: 获取商户审核列表
@@ -1058,6 +1234,8 @@ paths:
         - $ref: '#/components/parameters/PageableSize'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/QueryStatStart'
+        - $ref: '#/components/parameters/QueryStatEnd'
         - $ref: '#/components/parameters/Online'
         - $ref: '#/components/parameters/LevelId'
       responses:
@@ -1158,6 +1336,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/amount/{id}:
+    put:
+      summary: 更新码商金额
+      operationId: UpdateCollectorAmount
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateMoney'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/google-reset/{id}:
+    post:
+      summary: 重置码商谷歌验证
+      operationId: ResetCollectorGoogle
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/collector/levels:
     get:
       summary: 获取码商等级列表
@@ -1182,7 +1406,7 @@ paths:
                     type: array
                     description: 记录
                     items:
-                      $ref: '#/components/schemas/UserLevel'
+                      $ref: '#/components/schemas/CollectorLevel'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -1201,7 +1425,7 @@ paths:
       tags:
         - 码商
       requestBody:
-        $ref: '#/components/requestBodies/CreateUserLevel'
+        $ref: '#/components/requestBodies/CreateCollectorLevel'
       responses:
         200:
           description: 成功
@@ -1230,7 +1454,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserLevel'
+                $ref: '#/components/schemas/CollectorLevel'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -1250,7 +1474,28 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Id'
       requestBody:
-        $ref: '#/components/requestBodies/UpdateUserLevel'
+        $ref: '#/components/requestBodies/UpdateCollectorLevel'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除码商等级
+      operationId: DeleteCollectorLevel
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
       responses:
         200:
           description: 成功
@@ -1550,6 +1795,8 @@ paths:
         - $ref: '#/components/parameters/PayType'
         - $ref: '#/components/parameters/ProvinceId'
         - $ref: '#/components/parameters/CityId'
+        - $ref: '#/components/parameters/QueryStatStart'
+        - $ref: '#/components/parameters/QueryStatEnd'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
       responses:
@@ -2268,6 +2515,9 @@ components:
           type: string
           format: 'date-time'
           description: 支付时间
+        username:
+          type: string
+          description: 订单用户
         ip:
           type: string
           description: 下单时商户提供的用户IP
@@ -2408,11 +2658,11 @@ components:
           type: number
           format: int64
           description: 订单总数
-        successCount:
+        totalSuccessCount:
           type: number
           format: int64
           description: 成功总数
-        failCount:
+        totalFailCount:
           type: number
           format: int64
           description: 失败总数
@@ -2461,45 +2711,79 @@ components:
           * `delete`  - 删除
           * `offShelves`  - 下架
 
-
-    UserLevel:
+    LevelCommon:
       type: object
-      description: 用户等级
+      description: 等级通用字段
       properties:
         id:
           type: number
           description: ID
         name:
           type: string
-          description: 等级名称
-        createAt:
-          type: string
-          format: 'date-time'
-          description: 创建时间
-        delay:
-          type: number
-          description: 延迟显示（秒）
+          description: 名称
         remark:
           type: string
           description: 备注
-        state:
-          $ref: '#/components/schemas/AdminState'
-    CuUserLevel:
+    CollectorLevel:
+      description: 码商等级
+      allOf:
+        - $ref: '#/components/schemas/LevelCommon'
+        - type: object
+          properties:
+            createAt:
+              type: string
+              format: 'date-time'
+              description: 创建时间
+            delay:
+              type: number
+              description: 延迟显示（秒）
+            state:
+              $ref: '#/components/schemas/AdminState'
+    MerchantLevel:
+      description: 商户等级
+      allOf:
+        - $ref: '#/components/schemas/LevelCommon'
+        - type: object
+          properties:
+            rankMin:
+              type: number
+              description: 最小rank
+            rankMax:
+              type: number
+              description: 最大rank
+    CuLevelCommon:
       type: object
-      description: 更新用户等级
+      description: 创建|更新等级通用字段
       properties:
         name:
           type: string
-          description: 等级名称
-        delay:
-          type: number
-          description: 延迟显示（秒）
+          description: 名称
         remark:
           type: string
           description: 备注
-        state:
-          $ref: '#/components/schemas/AdminState'
-
+    CuCollectorLevel:
+      description: 创建|更新码商等级
+      allOf:
+        - $ref: '#/components/schemas/CuLevelCommon'
+        - type: object
+          properties:
+            delay:
+              type: number
+              description: 延迟显示（秒）
+            state:
+              $ref: '#/components/schemas/AdminState'
+    CuMerchantLevel:
+      description: 创建|更新商户等级
+      allOf:
+        - $ref: '#/components/schemas/CuLevelCommon'
+        - type: object
+          properties:
+            rankMin:
+              type: number
+              description: 最小rank
+            rankMax:
+              type: number
+              description: 最大rank
     Route:
       type: object
       description: 支付通道信息
@@ -2554,12 +2838,15 @@ components:
         totalCount:
           type: number
           description: 总订单数
-        totalSuccess:
+        totalSuccessCount:
           type: number
           description: 总成功订单数
         successRate:
           type: number
           description: 成功率
+        continuousFailNum:
+          type: number
+          description: 订单连续失败次数
 
     RouteDetail:
       type: object
@@ -2664,7 +2951,6 @@ components:
               * `balanceSystemAdd` - 后台增加跑分
               * `balanceSystemSub` - 后台减少跑分
               * `withdraw` - 提现
-              * `withdrawFailed` - 提现失败
               * `rebate` - 分佣
               * `lockAmountAdd` - 增加冻结金额
               * `lockAmountSub` - 释放冻结金额
@@ -2765,6 +3051,12 @@ components:
         phone:
           type: string
           description: 手机号
+        levelId:
+          type: number
+          description: 等级ID
+        levelName:
+          type: string
+          description: 等级名称
         amount:
           type: number
           description: 余额
@@ -2852,16 +3144,10 @@ components:
             loginIp:
               type: string
               description: 登陆IP
-            levelId:
-              type: number
-              description: 等级ID
-            levelName:
-              type: string
-              description: 等级名称
             totalCount:
               type: number
               description: 总订单数
-            totalSuccess:
+            totalSuccessCount:
               type: number
               description: 总成功订单数
             successRate:
@@ -2895,7 +3181,7 @@ components:
           type: string
           description: 上级昵称
         id:
-          type: string
+          type: number
           description: 用户ID
         nickname:
           type: string
@@ -2951,9 +3237,12 @@ components:
         - $ref: '#/components/schemas/ReviewCommon'
         - type: object
           description: 码商审核
+          properties:
+            channel:
+              $ref: '#/components/schemas/Channel'
     CollectorReviewDetail:
       allOf:
-        - $ref: '#/components/schemas/MerchantReview'
+        - $ref: '#/components/schemas/CollectorReview'
         - type: object
           description: 商户审核详情
           properties:
@@ -3004,6 +3293,9 @@ components:
         withdrawFee:
           type: number
           description: 提现手续费
+        levelId:
+          type: number
+          description: 等级ID
         state:
           $ref: '#/components/schemas/UserState'
     CuMerchant:
@@ -3044,6 +3336,8 @@ components:
           properties:
             channel:
               $ref: '#/components/schemas/Channel'
+            withdrawFeeType:
+              $ref: '#/components/schemas/RateType'
             rechargeFeeType:
               $ref: '#/components/schemas/RateType'
             rechargeFee:
@@ -3051,9 +3345,6 @@ components:
               description: 充值手续费
             workState:
               $ref: '#/components/schemas/WorkState'
-            levelId:
-              type: number
-              description: 等级ID
 
     UpdateReviewCommon:
       type: object
@@ -3094,7 +3385,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/UpdateReviewCommon'
         - type: object
-          description: 更新商户审核数据
+          description: 更新码商审核数据
           properties:
             channel:
               $ref: '#/components/schemas/Channel'
@@ -3131,7 +3422,7 @@ components:
         createAt:
           type: string
           format: 'date-time'
-          description: 创建实际
+          description: 创建时间
         state:
           $ref: '#/components/schemas/OrderState'
         processAt:
@@ -3343,9 +3634,6 @@ components:
       type: object
       description: 创建以及更新银行卡
       properties:
-        userId:
-          type: number
-          description: 银行卡涉及的用户ID
         bankId:
           type: number
           description: 银行ID
@@ -3368,7 +3656,7 @@ components:
         totalCount:
           type: number
           description: 总订单数
-        totalSuccess:
+        totalSuccessCount:
           type: number
           description: 总成功订单数
         totalAmount:
@@ -3535,6 +3823,29 @@ components:
               ip:
                 type: string
                 description: 添加黑名单的IP
+    UpdateMoney:
+      description: >
+        **增量** 更新金额【`增加`|`减少`】
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              amount:
+                type: number
+                description: 账户余额【佣金】
+              balance:
+                type: number
+                description: >
+                  跑分，仅在[`码商`|`服务商`]使用
+              lockAmount:
+                type: number
+                description: 冻结金额
+            example:
+              amount: 1000
+              balance: -1000
+              lockAmount: 500
     CreateMerchant:
       description: 创建商户
       required: true
@@ -3560,6 +3871,7 @@ components:
                   - iv
                   - openWechat
                   - openAlipay
+                  - levelId
     UpdateMerchant:
       description: 更新商户
       required: true
@@ -3645,26 +3957,46 @@ components:
               state:
                 $ref: '#/components/schemas/RouteState'
 
-    CreateUserLevel:
-      description: 创建用户等级
+    CreateMerchantLevel:
+      description: 创建商户等级
       required: true
       content:
         application/json:
           schema:
             allOf:
-              - $ref: '#/components/schemas/CuUserLevel'
+              - $ref: '#/components/schemas/CuMerchantLevel'
+              - type: object
+                required:
+                  - name
+                  - rankMin
+                  - rankMax
+    UpdateMerchantLevel:
+      description: 更新商户等级
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuMerchantLevel'
+    CreateCollectorLevel:
+      description: 创建码商等级
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuCollectorLevel'
               - type: object
                 required:
                   - name
                   - delay
                   - state
-    UpdateUserLevel:
-      description: 创建用户等级
+    UpdateCollectorLevel:
+      description: 更新码商等级
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CuUserLevel'
+            $ref: '#/components/schemas/CuCollectorLevel'
 
     UpdateOrderCommon:
       description: 更新订单
@@ -3686,6 +4018,10 @@ components:
             allOf:
               - $ref: '#/components/schemas/CuBankCard'
               - type: object
+                properties:
+                  userId:
+                    type: number
+                    description: 银行卡关联的用户ID
                 required:
                   - userId
                   - bankId
@@ -3698,11 +4034,7 @@ components:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/CuBankCard'
-              - type: object
-                required:
-                  - userId
+            $ref: '#/components/schemas/CuBankCard'
 
     BatchUpdateIpListState:
       description: 批量更新IP黑名单状态
@@ -3772,6 +4104,20 @@ components:
       schema:
         type: string
         format: 'date-time'
+    QueryStatStart:
+      name: statFromTime
+      in: query
+      description: 统计的开始时间
+      schema:
+        type: string
+        format: 'date-time'
+    QueryStatEnd:
+      name: statToTime
+      in: query
+      description: 统计的结束时间
+      schema:
+        type: string
+        format: 'date-time'
     Id:
       name: id
       in: path
@@ -3794,6 +4140,12 @@ components:
       schema:
         type: number
         format: int64
+    Username:
+      name: username
+      in: query
+      description: 用户名
+      schema:
+        type: string
     Nickname:
       name: nickname
       in: query
