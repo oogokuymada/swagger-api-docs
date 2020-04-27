@@ -1610,7 +1610,7 @@ paths:
         - 码商
       parameters:
         - $ref: '#/components/parameters/UserId'
-        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -1700,7 +1700,7 @@ paths:
         - 码商
       parameters:
         - $ref: '#/components/parameters/UserId'
-        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
