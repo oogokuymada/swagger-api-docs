@@ -1315,7 +1315,7 @@ paths:
                 $ref: '#/components/schemas/ApiErrorResponse'
     put:
       summary: 更新码商
-      operationId: UpdateMerchant
+      operationId: UpdateCollector
       tags:
         - 码商
       parameters:
@@ -2057,7 +2057,7 @@ paths:
   /admin/merchant-agent/withdraws:
     get:
       summary: 获取商户代理提现列表
-      operationId: ListMerchantWithdraws
+      operationId: ListMerchantAgentWithdraws
       tags:
         - 商户代理
       parameters:
@@ -2148,7 +2148,7 @@ paths:
   /admin/collector-agent/withdraws:
     get:
       summary: 获取码商代理提现列表
-      operationId: ListCollectorWithdraws
+      operationId: ListCollectorAgentWithdraws
       tags:
         - 码商代理
       parameters:
