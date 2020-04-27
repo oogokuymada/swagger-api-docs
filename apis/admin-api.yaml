@@ -1224,7 +1224,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/ParentId'
         - $ref: '#/components/parameters/UserId'
-        - $ref: '#/components/parameters/Nickname'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/Remark'
         - $ref: '#/components/parameters/Phone'
         - $ref: '#/components/parameters/WorkState'
@@ -1791,7 +1791,6 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/RouteState'
-        - $ref: '#/components/parameters/BankAccount'
         - $ref: '#/components/parameters/PayType'
         - $ref: '#/components/parameters/ProvinceId'
         - $ref: '#/components/parameters/CityId'
@@ -2738,7 +2737,7 @@ components:
               type: number
               description: 延迟显示（秒）
             state:
-              $ref: '#/components/schemas/AdminState'
+              $ref: '#/components/schemas/RecordState'
     MerchantLevel:
       description: 商户等级
       allOf:
@@ -3156,9 +3155,22 @@ components:
     CollectorDetail:
       description: 码商详情
       allOf:
-        - $ref: '#/components/schemas/Collector'
+        - $ref: '#/components/schemas/UserCommon'
         - type: object
           properties:
+            username:
+              type: string
+              description: 登陆账户
+            channel:
+              $ref: '#/components/schemas/Channel'
+            balance:
+              type: number
+              description: 跑分余额
+            workState:
+              $ref: '#/components/schemas/WorkState'
+            loginIp:
+              type: string
+              description: 登陆IP
             parentNickname:
               type: string
               description: 上级昵称
