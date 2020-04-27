@@ -3589,7 +3589,7 @@ components:
     CollectorWithdrawOrderDetail:
       description: 码商提现单详情
       allOf:
-        - $ref: '#/components/schemas/CollectorRechargeOrder'
+        - $ref: '#/components/schemas/CollectorWithdrawOrder'
         - $ref: '#/components/schemas/OrderDetailCommon'
         - $ref: '#/components/schemas/OrderDetailWithPay'
     CollectorAgentWithdrawOrder:
