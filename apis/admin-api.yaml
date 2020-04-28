@@ -2450,9 +2450,12 @@ components:
           description: 通道名称
         channelType:
           $ref: '#/components/schemas/ChannelType'
-        channelImage:
+        channelQrCodeUri:
           type: string
-          description: 通道的二维码
+          description: 通道的二维码链接
+        channelQrCodeContent:
+          type: string
+          description: 通道的二维码内容
         merchantId:
           type: number
           format: int64
