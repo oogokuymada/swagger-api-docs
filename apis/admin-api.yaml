@@ -2799,11 +2799,11 @@ components:
         username:
           type: string
           description: 码商用户名
-        payType:
-          $ref: '#/components/schemas/PayType'
-        image:
+        channelType:
+          $ref: '#/components/schemas/ChannelType'
+        qrCodeContent:
           type: string
-          description: 二维码地址
+          description: 二维码内容
         state:
           $ref: '#/components/schemas/RouteState'
         minAmount:
