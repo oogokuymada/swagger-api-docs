@@ -3761,6 +3761,9 @@ components:
         totalOrderAmount:
           type: number
           description: 订单总金额
+        totalSuccessOrderAmount:
+          type: number
+          description: 成功订单总金额
         totalWithdrawAmount:
           type: number
           description: 提现总金额
