@@ -3739,7 +3739,7 @@ components:
         collectorWithdrawIncome:
           type: number
           description: 码商提现收益
-        businessWithdrawIncome:
+        merchantWithdrawIncome:
           type: number
           description: 商户提现收益
         totalIncome:
