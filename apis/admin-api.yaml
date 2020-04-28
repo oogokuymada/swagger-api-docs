@@ -160,7 +160,7 @@ paths:
         - $ref: '#/components/parameters/MerchantId'
         - $ref: '#/components/parameters/PayFormat'
         - $ref: '#/components/parameters/PayState'
-        - $ref: '#/components/parameters/PayType'
+        - $ref: '#/components/parameters/ChannelType'
         - $ref: '#/components/parameters/OrderId'
         - $ref: '#/components/parameters/OrderSn'
         - $ref: '#/components/parameters/MerchantOrderId'
@@ -1791,7 +1791,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/RouteState'
-        - $ref: '#/components/parameters/PayType'
+        - $ref: '#/components/parameters/ChannelType'
         - $ref: '#/components/parameters/ProvinceId'
         - $ref: '#/components/parameters/CityId'
         - $ref: '#/components/parameters/QueryStatStart'
@@ -2285,13 +2285,6 @@ components:
           * `unpaid` - 未支付
           * `paid` - 已支付
           * `cancel`  - 已取消
-    PayType:
-      type: string
-      enum: [wechat, alipay]
-      description: >
-        商户单支付类型:
-          * `wechat` - 微信
-          * `alipay` - 支付宝
     PayStrategy:
       type: string
       enum: [unknown, grab, dispatch]
@@ -2456,7 +2449,7 @@ components:
           type: string
           description: 通道名称
         channelType:
-          $ref: '#/components/schemas/PayType'
+          $ref: '#/components/schemas/ChannelType'
         channelImage:
           type: string
           description: 通道的二维码
@@ -2817,10 +2810,10 @@ components:
           description: 最大金额
         totalAmount:
           type: number
-          description: 总金额
+          description: 每日可用总金额
         usableAmount:
           type: number
-          description: 可用金额
+          description: 当前剩余可用金额
         createAt:
           type: string
           format: 'date-time'
@@ -2910,10 +2903,10 @@ components:
           description: 最大金额
         totalAmount:
           type: number
-          description: 总金额
+          description: 每日可用总金额
         usableAmount:
           type: number
-          description: 可用金额
+          description: 当前剩余可用金额
         createAt:
           type: string
           format: 'date-time'
@@ -4267,12 +4260,12 @@ components:
       description: 支付状态
       schema:
         $ref: '#/components/schemas/PayState'
-    PayType:
-      name: payType
+    ChannelType:
+      name: type
       in: query
       description: 支付类型
       schema:
-        $ref: '#/components/schemas/PayType'
+        $ref: '#/components/schemas/ChannelType'
     OrderId:
       name: orderId
       in: query
