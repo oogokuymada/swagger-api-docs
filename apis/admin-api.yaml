@@ -2850,6 +2850,32 @@ components:
           type: number
           description: 订单连续失败次数
 
+    RouteMeta:
+      type: object
+      description: 通道元数据
+      properties:
+        relaName:
+          type: string
+          description: 真实姓名
+        toWord:
+          type: string
+          description: 口令收款
+        toAccount:
+          type: string
+          description: 转账到账户|手机，微信只能是手机
+        toAccountPid:
+          type: string
+          description: 支付宝定额支付
+        toBankName:
+          type: string
+          description: 转账到银行卡：银行名称
+        toBankAccount:
+          type: string
+          description: 转账到银行卡：银行卡账户
+        toBankCard:
+          type: string
+          description: 转账到银行卡：银行卡号
+
     RouteDetail:
       type: object
       description: 支付通道详情
@@ -2904,6 +2930,8 @@ components:
         cityName:
           type: string
           description: 城市名
+        meta:
+          $ref: '#/components/schemas/RouteMeta'
 
     MoneyLogCommonType:
       type: string
