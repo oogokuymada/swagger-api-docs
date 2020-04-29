@@ -3478,6 +3478,9 @@ components:
         userId:
           type: number
           description: 代理ID
+        username:
+          type: string
+          description: 代理账户
         nickname:
           type: string
           description: 代理昵称
