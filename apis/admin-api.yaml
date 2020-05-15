@@ -5,6 +5,8 @@ info:
 servers:
   - url: https://admin-api.zsf918.com/v1
 tags:
+  - name: 仪表盘
+    description: 仪表盘API
   - name: 管理员
     description: 管理员账户API
   - name: 订单
@@ -22,6 +24,132 @@ tags:
   - name: 码商代理
     description: 码商代理API
 paths:
+
+  /admin/dashboard/summary/merchant-success-order:
+    get:
+      summary: 商户成功订单按时间总计
+      operationId: GetDashboardSummaryMerchantSuccessOrder
+      tags:
+        - 仪表盘
+      parameters:
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryMerchantSuccessOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/dashboard/summary/merchant-order:
+    get:
+      summary: 商户订单总计
+      operationId: GetDashboardSummaryMerchantOrder
+      tags:
+        - 仪表盘
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryMerchantOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/dashboard/summary/collector:
+    get:
+      summary: 码商总计
+      operationId: GetDashboardSummaryCollector
+      tags:
+        - 仪表盘
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                description: 码商总计
+                allOf:
+                  - $ref: '#/components/schemas/SummaryAppendUser'
+                  - $ref: '#/components/schemas/SummaryWithdraw'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/dashboard/summary/merchant:
+    get:
+      summary: 商户总计
+      operationId: GetDashboardSummaryMerchant
+      tags:
+        - 仪表盘
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                description: 商户总计
+                allOf:
+                  - $ref: '#/components/schemas/SummaryUser'
+                  - $ref: '#/components/schemas/SummaryWithdraw'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/dashboard/summary/route:
+    get:
+      summary: 通道总计
+      operationId: GetDashboardSummaryRoute
+      tags:
+        - 仪表盘
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryRoute'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
   /admin/accounts:
     get:
       summary: 获取管理员列表
@@ -547,6 +675,7 @@ paths:
         - $ref: '#/components/parameters/Phone'
         - $ref: '#/components/parameters/UserListState'
         - $ref: '#/components/parameters/Agent'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
       responses:
@@ -565,6 +694,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/Merchant'
+                  summary:
+                    $ref: '#/components/schemas/SummaryUser'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -923,6 +1054,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -944,6 +1076,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/MerchantWithdrawOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -1238,6 +1372,7 @@ paths:
         - $ref: '#/components/parameters/QueryStatEnd'
         - $ref: '#/components/parameters/Online'
         - $ref: '#/components/parameters/LevelId'
+        - $ref: '#/components/parameters/Summary'
       responses:
         200:
           description: 成功
@@ -1254,6 +1389,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/Collector'
+                  summary:
+                    $ref: '#/components/schemas/SummaryAppendUser'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -1611,6 +1748,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Username'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -1632,6 +1770,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/CollectorRechargeOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -1702,6 +1842,7 @@ paths:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
         - $ref: '#/components/parameters/PageablePage'
@@ -1722,6 +1863,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/CollectorWithdrawOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -2063,6 +2206,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -2084,6 +2228,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/MerchantAgentWithdrawOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -2154,6 +2300,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Summary'
         - $ref: '#/components/parameters/OrderState'
         - $ref: '#/components/parameters/QueryStart'
         - $ref: '#/components/parameters/QueryEnd'
@@ -2175,6 +2322,8 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/CollectorAgentWithdrawOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -2238,6 +2387,101 @@ paths:
 
 components:
   schemas:
+
+    SummaryMerchantSuccessOrder:
+      type: object
+      description: 成功订单总计
+      properties:
+        totalSuccessCount:
+          type: number
+          description: 成功订单数量
+        totalSuccessAmount:
+          type: number
+          description: 成功订单金额
+        totalIncome:
+          type: number
+          description: 成功订单平台收益
+    SummaryMerchantOrder:
+      type: object
+      description: 商户订单总计
+      properties:
+        totalCount:
+          type: number
+          description: 订单总数
+        totalSuccessCount:
+          type: number
+          description: 成功订单数量
+        totalAmount:
+          type: number
+          description: 订单总金额
+        totalSuccessAmount:
+          type: number
+          description: 成功订单金额
+        totalFee:
+          type: number
+          description: 成功订单商户支出的手续费
+        totalCommission:
+          type: number
+          description: 成功订单码商获得的佣金
+        totalIncome:
+          type: number
+          description: 成功订单平台收益
+        successRate:
+          type: number
+          description: 成功率
+    SummaryOrder:
+      type: object
+      description: 订单总计
+      properties:
+        totalAmount:
+          type: number
+          description: 总金额
+        totalActualAmount:
+          type: number
+          description: 总实付金额
+        totalFee:
+          type: number
+          description: 总手续费
+    SummaryWithdraw:
+      type: object
+      description: 提现总计
+      properties:
+        totalWithdrawingAmount:
+          type: number
+          description: 总提现中的金额
+    SummaryUser:
+      type: object
+      description: 用户总计
+      properties:
+        totalCount:
+          type: number
+          description: 码商总数
+        totalAmount:
+          type: number
+          description: 总余额
+        totalLockAmount:
+          type: number
+          description: 总锁定金额
+    SummaryAppendUser:
+      description: 总计
+      allOf:
+        - $ref: '#/components/schemas/SummaryUser'
+        - type: object
+          properties:
+            totalBalance:
+              type: number
+              description: 总跑分
+    SummaryRoute:
+      type: object
+      description: 通道总计[仅统计已启用的通道]
+      properties:
+        wechatCount:
+          type: number
+          description: 微信通道数量
+        alipayCount:
+          type: number
+          description: 支付宝通道数量
+
     IsOnline:
       type: boolean
       description: 是否在线
@@ -4237,6 +4481,13 @@ components:
       schema:
         type: number
 
+    Summary:
+      name: summary
+      in: query
+      description: 是否对结果进行统计
+      schema:
+        type: boolean
+
     CollectorId:
       name: collectorId
       in: query
@@ -4325,17 +4576,21 @@ components:
       schema:
         $ref: '#/components/schemas/IsOnline'
     MerchantMoneyLogType:
-      name: type
+      name: types
       in: query
-      description: 资金日志类型
+      description: 资金日志类型[数组]
       schema:
-        $ref: '#/components/schemas/MerchantMoneyLogType'
+        type: array
+        items:
+          $ref: '#/components/schemas/MerchantMoneyLogType'
     CollectorMoneyLogType:
-      name: type
+      name: types
       in: query
-      description: 资金日志类型
+      description: 资金日志类型[数组]
       schema:
-        $ref: '#/components/schemas/CollectorMoneyLogType'
+        type: array
+        items:
+          $ref: '#/components/schemas/CollectorMoneyLogType'
     BankAccount:
       name: bankAccount
       in: query
