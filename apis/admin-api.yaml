@@ -25,38 +25,15 @@ tags:
     description: 码商代理API
 paths:
 
-  /admin/dashboard/summary/merchant-success-order:
-    get:
-      summary: 商户成功订单按时间总计
-      operationId: GetDashboardSummaryMerchantSuccessOrder
-      tags:
-        - 仪表盘
-      parameters:
-        - $ref: '#/components/parameters/QueryStart'
-        - $ref: '#/components/parameters/QueryEnd'
-      responses:
-        200:
-          description: 成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SummaryMerchantSuccessOrder'
-        401:
-          $ref: '#/components/responses/UnauthorizedError'
-        403:
-          description: 已授权无权限
-        500:
-          description: 其他服务器异常
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/dashboard/summary/merchant-order:
     get:
       summary: 商户订单总计
       operationId: GetDashboardSummaryMerchantOrder
       tags:
         - 仪表盘
+      parameters:
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
       responses:
         200:
           description: 成功
@@ -2388,25 +2365,6 @@ paths:
 components:
   schemas:
 
-    SummaryMerchantSuccessOrder:
-      type: object
-      description: 成功订单总计
-      properties:
-        totalCount:
-          type: number
-          description: 订单总数
-        totalSuccessCount:
-          type: number
-          description: 成功订单数量
-        totalAmount:
-          type: number
-          description: 订单总金额
-        totalSuccessAmount:
-          type: number
-          description: 成功订单金额
-        totalIncome:
-          type: number
-          description: 成功订单平台收益
     SummaryMerchantOrder:
       type: object
       description: 商户订单总计
