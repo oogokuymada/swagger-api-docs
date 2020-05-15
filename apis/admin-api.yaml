@@ -2392,9 +2392,15 @@ components:
       type: object
       description: 成功订单总计
       properties:
+        totalCount:
+          type: number
+          description: 订单总数
         totalSuccessCount:
           type: number
           description: 成功订单数量
+        totalAmount:
+          type: number
+          description: 订单总金额
         totalSuccessAmount:
           type: number
           description: 成功订单金额
