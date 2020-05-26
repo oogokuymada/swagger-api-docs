@@ -65,6 +65,120 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /base/configs:
+    get:
+      tags:
+        - 信息
+      summary: 获取配置列表
+      operationId: listConfigs
+      parameters:
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Config'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /base/regions:
+    get:
+      tags:
+        - 信息
+      summary: 获取下级地区列表
+      operationId: listRegions
+      parameters:
+        - name: regionId
+          in: query
+          description: 上级地区ID
+          schema:
+            type: number
+        - name: regionLevel
+          in: query
+          description: 地区级别
+          required: true
+          schema:
+            type: string
+            enum: [province, city, district, street]
+            description: >
+              地区级别:
+                * `province` - 省份
+                * `city` - 城市
+                * `district` - 区
+                * `street` - 街道/镇
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Region'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 
   /account/profile:
     get:
@@ -257,6 +371,50 @@ paths:
 
 components:
   schemas:
+
+    # 2020/05/26
+
+    Region:
+      type: object
+      description: 地区
+      properties:
+        parentId:
+          type: number
+          description: 上级地区ID
+        id:
+          type: number
+          description: 地区ID
+        name:
+          type: string
+          description: 地区名称
+        level:
+          type: string
+          enum: [province, city, district, street]
+          description: >
+            地区级别:
+              * `province` - 省份
+              * `city` - 城市
+              * `district` - 区
+              * `street` - 街道/镇
+    Config:
+      type: object
+      description: 配置
+      properties:
+        id:
+          type: number
+          description: 配置ID
+        name:
+          type: string
+          description: 配置名称
+        value:
+          type: string
+          description: 配置值
+        description:
+          type: string
+          description: 配置描述
+
+    # old
+
     Bank:
       type: object
       properties:
@@ -539,7 +697,6 @@ components:
         confirmPassword:
           type: string
           description: 新密码的重复输入
-
 
     Login:
       type: object
