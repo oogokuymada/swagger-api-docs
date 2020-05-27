@@ -3335,6 +3335,12 @@ components:
         online:
           type: number
           description: 在线用户数量
+        collectorOnline:
+          type: number
+          description: 在线码商数量
+        providerOnline:
+          type: number
+          description: 在线服务商数量
         merchantOrderCount:
           type: number
           description: 进行中的商户单数量
