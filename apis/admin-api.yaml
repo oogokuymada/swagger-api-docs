@@ -1493,7 +1493,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
-  /admin/merchant/statistics:
+  /admin/merchant/statistic:
     get:
       summary: 获取商户统计列表
       operationId: ListMerchantStatistics
