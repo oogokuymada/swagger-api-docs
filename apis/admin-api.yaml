@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
   title: Admin API
-  version: 1.0.1
+  version: 1.0.2
 servers:
   - url: https://admin-api.zsf918.com/v1
 tags:
@@ -25,6 +25,8 @@ tags:
     description: 商户代理API
   - name: 码商代理
     description: 码商代理API
+  - name: 服务商代理
+    description: 服务商代理API
 paths:
 
   /admin/dashboard/summary/merchant-order:
@@ -2867,7 +2869,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/Id'
       requestBody:
-        $ref: '#/components/requestBodies/UpdateCollectorRoute'
+        $ref: '#/components/requestBodies/UpdateProviderRoute'
       responses:
         200:
           description: 成功
@@ -3217,6 +3219,99 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CollectorAgentWithdrawOrderDetail'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新码商代理提现单
+      operationId: UpdateCollectorAgentWithdraw
+      tags:
+        - 码商代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateOrderCommon'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/provider-agent/withdraws:
+    get:
+      summary: 获取服务商代理提现列表
+      operationId: ListProviderAgentWithdraws
+      tags:
+        - 服务商代理
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Phone'
+        - $ref: '#/components/parameters/Summary'
+        - $ref: '#/components/parameters/OrderState'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/ProviderAgentWithdrawOrder'
+                  summary:
+                    $ref: '#/components/schemas/SummaryOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/provider-agent/withdraw/{id}:
+    get:
+      summary: 获取服务商代理提现单
+      operationId: GetProviderAgentWithdraw
+      tags:
+        - 服务商代理
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderAgentWithdrawOrderDetail'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
