@@ -1457,6 +1457,7 @@ paths:
       tags:
         - 商户
       parameters:
+        - $ref: '#/components/parameters/OrderId'
         - $ref: '#/components/parameters/UserId'
         - $ref: '#/components/parameters/MerchantMoneyLogType'
         - $ref: '#/components/parameters/PageablePage'
@@ -2115,6 +2116,7 @@ paths:
         - 码商
       parameters:
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/BankAccount'
         - $ref: '#/components/parameters/Agent'
         - $ref: '#/components/parameters/RecordState'
@@ -2360,7 +2362,9 @@ paths:
       tags:
         - 码商
       parameters:
+        - $ref: '#/components/parameters/OrderId'
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/MoneyLogType'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
@@ -2662,6 +2666,7 @@ paths:
         - 服务商
       parameters:
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/BankAccount'
         - $ref: '#/components/parameters/Agent'
         - $ref: '#/components/parameters/RecordState'
@@ -2906,7 +2911,9 @@ paths:
       tags:
         - 服务商
       parameters:
+        - $ref: '#/components/parameters/OrderId'
         - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Username'
         - $ref: '#/components/parameters/MoneyLogType'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
@@ -4956,6 +4963,9 @@ components:
         userId:
           type: number
           description: 用户ID
+        username:
+          type: string
+          description: 用户名
         id:
           type: number
           description: 银行卡ID
