@@ -4299,6 +4299,12 @@ components:
             closeWithdraw:
               type: boolean
               description:  是否关闭提现通道，商户将不能提现
+            notifyVersion:
+              type: number
+              description: >
+                订单通知版本:
+                  * `0` - 原始版本
+                  * `1` - 增加返回订单状态
     Collector:
       description: 码商信息
       allOf:
@@ -4576,6 +4582,12 @@ components:
             closeWithdraw:
               type: boolean
               description:  是否关闭提现通道，商户将不能提现
+            notifyVersion:
+              type: number
+              description: >
+                订单通知版本:
+                  * `0` - 原始版本
+                  * `1` - 增加返回订单状态
     CuCollector:
       allOf:
         - $ref: '#/components/schemas/CuUserCommon'
