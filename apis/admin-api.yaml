@@ -55,6 +55,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/dashboard/chart/merchant-order:
+    get:
+      summary: 商户订单时间统计
+      operationId: GetDashboardSummaryMerchantOrder
+      tags:
+        - 仪表盘
+      parameters:
+        - name: datetimeUnit
+          in: query
+          description: 时间统计按什么为单位
+          schema:
+            type: string
+            enum: [month, day, hour, minute]
+            description: >
+              时间单位:
+                * `month` - 月
+                * `day` - 天
+                * `hour` - 小时
+                * `minute` - 分钟
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChartMerchantOrder'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
   /admin/dashboard/summary/collector:
     get:
       summary: 码商总计
@@ -510,6 +550,8 @@ paths:
                     type: number
                     format: int64
                     description: 总数
+                  summary:
+                    $ref: '#/components/schemas/SummaryMerchantOrder'
                   records:
                     type: array
                     items:
@@ -3585,6 +3627,15 @@ components:
         successRate:
           type: number
           description: 成功率
+    ChartMerchantOrder:
+      description: 商户订单时间统计图
+      allOf:
+        - $ref: '#/components/schemas/SummaryMerchantOrder'
+        - properties:
+            date:
+              type: string
+              format: 'date-time'
+              description: 分组时间
     SummaryOrder:
       type: object
       description: 订单总计
