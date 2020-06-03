@@ -369,8 +369,133 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
+  /sys/logs:
+    get:
+      summary: 获取系统日志
+      operationId: ListSysLogs
+      tags:
+        - 系统
+      parameters:
+        - name: type
+          in: query
+          description: 日志类型
+          schema:
+            type: number
+        - name: dataId
+          in: query
+          description: 数据ID
+          schema:
+            type: string
+        - name: ip
+          in: query
+          description: 请求IP
+          schema:
+            type: string
+        - name: uri
+          in: query
+          description: 请求连接
+          schema:
+            type: string
+        - name: fromTime
+          in: query
+          description: 请求开始时间
+          schema:
+            type: string
+            format: 'date-time'
+        - name: toTime
+          in: query
+          description: 请求结束时间
+          schema:
+            type: string
+            format: 'date-time'
+        - name: page
+          in: query
+          description: 页数
+          required: true
+          schema:
+            type: number
+            default: 1
+        - name: size
+          in: query
+          description: 页大小
+          required: true
+          schema:
+            type: number
+            default: 10
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SysLog'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
 components:
   schemas:
+
+    # 2020/06/02
+
+    SysLog:
+      type: object
+      description: 系统日志
+      properties:
+        id:
+          type: string
+          description: 日志ID
+        adminId:
+          type: string
+          description: 操作人ID，若接口未登陆即可调用，此处ID为0
+        uri:
+          type: string
+          description: 请求地址
+        method:
+          type: string
+          enum: [GET, POST, PUT, DELETE]
+          description: 请求方式
+        ip:
+          type: string
+          description: 请求IP
+        type:
+          type: integer
+          description: 日志的类型
+        dataId:
+          type: string
+          description: 数据ID,针对account/{id}之类的接口，取id
+        requestTime:
+          type: number
+          description: 请求时间戳（秒）
+        responseTime:
+          type: number
+          description: 响应时间戳（秒）
+        headers:
+          type: string
+          description: 保存的头部
+        parameters:
+          type: string
+          description: 保存的参数
+        result:
+          type: string
+          description: 保存的响应结果
 
     # 2020/05/26
 

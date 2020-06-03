@@ -455,6 +455,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/account/google-reset/{id}:
+    post:
+      summary: 重置管理员谷歌验证
+      operationId: ResetAccountGoogle
+      tags:
+        - 管理员
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
   /admin/orders:
     get:
       summary: 获取订单列表
@@ -1532,6 +1555,67 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/statistic/order:
+    get:
+      summary: 获取商户跑量统计
+      operationId: ListMerchantOrderStatistic
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  summary:
+                    $ref: '#/components/schemas/CustomChannelStatistic'
+                  records:
+                    type: array
+                    description: 下级跑量
+                    items:
+                      $ref: '#/components/schemas/CustomChannelStatistic'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/merchant/batch-update-rate:
+    put:
+      summary: 统一更新商户费率
+      operationId: BatchUpdateMerchantRate
+      tags:
+        - 商户
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/BatchUpdateMerchantRate'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
 
   /admin/collectors:
     get:
@@ -2399,6 +2483,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/statistic/order:
+    get:
+      summary: 获取码商跑量统计
+      operationId: ListCollectorOrderStatistic
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  summary:
+                    $ref: '#/components/schemas/CustomChannelStatistic'
+                  records:
+                    type: array
+                    description: 下级跑量
+                    items:
+                      $ref: '#/components/schemas/CustomChannelStatistic'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/collector/batch-update-rate:
+    put:
+      summary: 统一更新码商费率
+      operationId: BatchUpdateCollectorRate
+      tags:
+        - 码商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/BatchUpdateCollectorRate'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
   /admin/providers:
     get:
       summary: 获取服务商列表
@@ -2937,6 +3083,67 @@ paths:
                     description: 记录
                     items:
                       $ref: '#/components/schemas/MoneyLog'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/provider/statistic/order:
+    get:
+      summary: 获取服务商跑量统计
+      operationId: ListProviderOrderStatistic
+      tags:
+        - 服务商
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/QueryStart'
+        - $ref: '#/components/parameters/QueryEnd'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  summary:
+                    $ref: '#/components/schemas/ProviderChannelStatistic'
+                  records:
+                    type: array
+                    description: 下级跑量
+                    items:
+                      $ref: '#/components/schemas/ProviderChannelStatistic'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/provider/batch-update-rate:
+    put:
+      summary: 统一更新服务商费率
+      operationId: BatchUpdateProviderRate
+      tags:
+        - 服务商
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/BatchUpdateProviderRate'
+      responses:
+        200:
+          description: 成功
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -5217,6 +5424,44 @@ components:
               type: number
               description: 订单总佣金
 
+    ChannelStatistic:
+      type: object
+      description: 通道统计
+      properties:
+        totalCount:
+          type: number
+          description: 总数
+        totalSuccessCount:
+          type: number
+          description: 成功数
+        totalAmount:
+          type: number
+          description: 总金额
+        totalSuccessAmount:
+          type: number
+          description: 成功金额
+        totalRebate:
+          type: number
+          description: 总返现金额
+        successRate:
+          type: number
+          description: 成功率
+    CustomChannelStatistic:
+      type: object
+      description: 商户单统计
+      properties:
+        wechat:
+          $ref: '#/components/schemas/ChannelStatistic'
+        alipay:
+          $ref: '#/components/schemas/ChannelStatistic'
+    ProviderChannelStatistic:
+      type: object
+      description: 服务商单统计
+      properties:
+        bank:
+          $ref: '#/components/schemas/ChannelStatistic'
+
+
     ApiErrorResponse:
       type: object
       properties:
@@ -5637,6 +5882,48 @@ components:
                 description: 批量更新通道ID
               state:
                 $ref: '#/components/schemas/RouteState'
+
+    BatchUpdateCollectorRate:
+      description: 统一更新码商费率
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              wechat:
+                $ref: '#/components/schemas/ChannelRate'
+              alipay:
+                $ref: '#/components/schemas/ChannelRate'
+              rechargeFee:
+                $ref: '#/components/schemas/ChannelRate'
+              withdrawFee:
+                $ref: '#/components/schemas/ChannelRate'
+    BatchUpdateProviderRate:
+      description: 统一更新服务商费率
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              collectorRecharge:
+                $ref: '#/components/schemas/ChannelRate'
+              merchantWithdraw:
+                $ref: '#/components/schemas/ChannelRate'
+              rechargeFee:
+                $ref: '#/components/schemas/ChannelRate'
+              withdrawFee:
+                $ref: '#/components/schemas/ChannelRate'
+    BatchUpdateMerchantRate:
+      description: 统一更新商户费率
+      required: true
+      content:
+        application/json:
+          schema:
+            properties:
+              wechat:
+                $ref: '#/components/schemas/ChannelRate'
+              alipay:
+                $ref: '#/components/schemas/ChannelRate'
 
   securitySchemes:
     bearerAuth:
