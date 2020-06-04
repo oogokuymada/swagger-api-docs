@@ -60,7 +60,7 @@ paths:
   /admin/dashboard/chart/merchant-order:
     get:
       summary: 商户订单时间统计
-      operationId: GetDashboardSummaryMerchantOrder
+      operationId: GetDashboardChartMerchantOrder
       tags:
         - 仪表盘
       parameters:
@@ -86,7 +86,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChartMerchantOrder'
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/ChartMerchantOrder'
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
