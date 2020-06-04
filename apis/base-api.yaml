@@ -476,7 +476,7 @@ components:
           type: string
           description: 请求IP
         type:
-          type: integer
+          type: string
           description: 日志的类型
         dataId:
           type: string

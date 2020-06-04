@@ -7,6 +7,8 @@ servers:
 tags:
   - name: 仪表盘
     description: 仪表盘API
+  - name: APP
+    description: APP相关API
   - name: 设置
     description: 系统设置API
   - name: 管理员
@@ -183,6 +185,259 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SummaryBasic'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /admin/app/ids:
+    get:
+      summary: 获取AppId列表
+      operationId: ListAppIds
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Q'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/AppId'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/app/id:
+    post:
+      summary: 创建APP-ID
+      operationId: CreateAppId
+      tags:
+        - APP
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAppId'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/app/id/{id}:
+    get:
+      summary: 获取APP-ID
+      operationId: GetAppId
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppId'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新APP-ID
+      operationId: UpdateAppId
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAppId'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除APP-ID
+      operationId: DeleteAppId
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/app/upgrades:
+    get:
+      summary: 获取APP更新列表
+      operationId: ListAppUpgrades
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Q'
+        - $ref: '#/components/parameters/AppId'
+        - $ref: '#/components/parameters/UpgradeType'
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                properties:
+                  total:
+                    type: number
+                    format: int64
+                    description: 总数
+                  records:
+                    type: array
+                    description: 记录
+                    items:
+                      $ref: '#/components/schemas/AppUpgrade'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+          content: {}
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/app/upgrade:
+    post:
+      summary: 创建APP更新
+      operationId: CreateAppUpgrade
+      tags:
+        - APP
+      requestBody:
+        $ref: '#/components/requestBodies/CreateAppUpgrade'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+  /admin/app/upgrade/{id}:
+    get:
+      summary: 获取APP更新
+      operationId: GetAppUpgrade
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUpgrade'
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    put:
+      summary: 更新APP更新
+      operationId: UpdateAppUpgrade
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateAppUpgrade'
+      responses:
+        200:
+          description: 成功
+        401:
+          $ref: '#/components/responses/UnauthorizedError'
+        403:
+          description: 已授权无权限
+        500:
+          description: 其他服务器异常
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+    delete:
+      summary: 删除APP更新
+      operationId: DeleteAppUpgrade
+      tags:
+        - APP
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        200:
+          description: 成功
         401:
           $ref: '#/components/responses/UnauthorizedError'
         403:
@@ -378,6 +633,7 @@ paths:
       tags:
         - 管理员
       parameters:
+        - $ref: '#/components/parameters/Online'
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
       responses:
@@ -3694,7 +3950,7 @@ components:
       properties:
         online:
           type: number
-          description: 在线用户数量
+          description: 在线管理员数量
         collectorOnline:
           type: number
           description: 在线码商数量
@@ -5512,6 +5768,84 @@ components:
         bank:
           $ref: '#/components/schemas/ChannelStatistic'
 
+    AppId:
+      type: object
+      description: APP-ID
+      properties:
+        id:
+          type: number
+          description: ID
+        name:
+          type: string
+          description: APP名称
+        remark:
+          type: string
+          description: 备注
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 创建时间
+    CuAppId:
+      type: object
+      description: 创建更新APP-ID
+      properties:
+        name:
+          type: string
+          description: APP名称
+        remark:
+          type: string
+          description: 备注
+    UpgradeType:
+      type: string
+      enum: [normal, browser, test]
+      description: >
+        APP升级方式:
+          * `normal` - 普通更新
+          * `browser` - 浏览器更新
+          * `test` - 测试版本
+    AppUpgrade:
+      type: object
+      description: APP更新
+      properties:
+        id:
+          type: number
+          description: ID
+        appId:
+          type: number
+          description: appId
+        appName:
+          type: string
+          description: app名称
+        type:
+          $ref: '#/components/schemas/UpgradeType'
+        version:
+          type: string
+          description: 版本号，格式为x.y.z
+        url:
+          type: string
+          description: 更新地址
+        description:
+          type: string
+          description: 更新描述
+        createAt:
+          type: string
+          format: 'date-time'
+          description: 创建时间
+    CuAppUpgrade:
+      type: object
+      description: APP更新
+      properties:
+        type:
+          $ref: '#/components/schemas/UpgradeType'
+        version:
+          type: string
+          description: 版本号，格式为x.y.z
+        url:
+          type: string
+          description: 更新地址
+        description:
+          type: string
+          description: 更新描述
 
     ApiErrorResponse:
       type: object
@@ -5976,6 +6310,49 @@ components:
               alipay:
                 $ref: '#/components/schemas/ChannelRate'
 
+    CreateAppId:
+      description: 创建APP-ID
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuAppId'
+              - required:
+                  - name
+    UpdateAppId:
+      description: 更新APP-ID
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuAppId'
+    CreateAppUpgrade:
+      description: 创建APP升级
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/CuAppUpgrade'
+              - type: object
+                properties:
+                  appId:
+                    type: number
+                    description: 关联的appId
+                required:
+                  - appId
+                  - type
+                  - version
+                  - url
+    UpdateAppUpgrade:
+      description: 更新APP升级
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CuAppUpgrade'
+
   securitySchemes:
     bearerAuth:
       type: http
@@ -6103,6 +6480,12 @@ components:
       description: 等级ID
       schema:
         type: number
+    Q:
+      name: q
+      in: query
+      description: 模糊查询
+      schema:
+        type: string
 
     Summary:
       name: summary
@@ -6232,6 +6615,19 @@ components:
       description: 城市ID
       schema:
         type: number
+
+    AppId:
+      name: appId
+      in: query
+      description: appId
+      schema:
+        type: number
+    UpgradeType:
+      name: type
+      in: query
+      description: 升级方式
+      schema:
+        $ref: '#/components/schemas/UpgradeType'
 
 security:
   - bearerAuth: []
