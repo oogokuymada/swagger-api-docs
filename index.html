@@ -1,81 +1,60 @@
 <!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <title>Swagger UI</title>
-    <link rel="stylesheet" type="text/css" href="dist/swagger-ui.css">
-    <link rel="icon" type="image/png" href="dist/favicon-32x32.png" sizes="32x32"/>
-    <link rel="icon" type="image/png" href="dist/favicon-16x16.png" sizes="16x16"/>
+    <link rel="stylesheet" type="text/css" href="dist/swagger-ui.css" >
+    <link rel="icon" type="image/png" href="dist/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="dist/favicon-16x16.png" sizes="16x16" />
     <style>
-        html {
-            box-sizing: border-box;
-            overflow: -moz-scrollbars-vertical;
-            overflow-y: scroll;
-        }
+      html
+      {
+        box-sizing: border-box;
+        overflow: -moz-scrollbars-vertical;
+        overflow-y: scroll;
+      }
 
-        *,
-        *:before,
-        *:after {
-            box-sizing: inherit;
-        }
+      *,
+      *:before,
+      *:after
+      {
+        box-sizing: inherit;
+      }
 
-        body {
-            margin: 0;
-            background: #fafafa;
-        }
+      body
+      {
+        margin:0;
+        background: #fafafa;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-<div id="swagger-ui"></div>
+  <body>
+    <div id="swagger-ui"></div>
 
-<script src="dist/swagger-ui-bundle.js"></script>
-<script src="dist/swagger-ui-standalone-preset.js"></script>
-<script>
-    window.onload = function () {
-        // Begin Swagger UI call region
-        // End Swagger UI call region
+    <script src="dist/swagger-ui-bundle.js" charset="UTF-8"> </script>
+    <script src="dist/swagger-ui-standalone-preset.js" charset="UTF-8"> </script>
+    <script>
+    window.onload = function() {
+      // Begin Swagger UI call region
+      const ui = SwaggerUIBundle({
+        url: "swagger.yaml",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "StandaloneLayout"
+      })
+      // End Swagger UI call region
 
-        window.ui = SwaggerUIBundle({
-            urls: [
-                {
-                    name: '通用',
-                    url: 'apis/base-api.yaml'
-                },
-                {
-                    name: '管理后台',
-                    url: 'apis/admin-api.yaml'
-                },
-                {
-                    name: '商户后台',
-                    url: 'apis/merchant-api.yaml'
-                },
-                {
-                    name: '码商代理后台',
-                    url: 'apis/supplier-agent-api.yaml'
-                },
-                {
-                    name: '商户代理后台',
-                    url: 'apis/merchant-agent-api.yaml'
-                },
-                {
-                    name: '服务商代理后台',
-                    url: 'apis/provider-agent-api.yaml'
-                }
-            ],
-            dom_id: '#swagger-ui',
-            deepLinking: true,
-            presets: [
-                SwaggerUIBundle.presets.apis,
-                SwaggerUIStandalonePreset
-            ],
-            plugins: [
-                SwaggerUIBundle.plugins.DownloadUrl
-            ],
-            layout: "StandaloneLayout"
-        });
+      window.ui = ui
     }
-</script>
-</body>
+  </script>
+  </body>
 </html>
